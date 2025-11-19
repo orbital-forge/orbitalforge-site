@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbital Forge | The Expanse Validator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #050816;
+      color: #e5e7eb;
+      line-height: 1.6;
+    }
+    header {
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      background: radial-gradient(circle at top, #1d4ed8 0, #050816 55%);
+    }
+    .logo {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+    .tagline {
+      margin-top: 0.5rem;
+      font-size: 0.95rem;
+      color: #9ca3af;
+    }
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 3rem;
+    }
+    section {
+      margin-bottom: 2.5rem;
+      border-radius: 0.75rem;
+      padding: 1.75rem 1.5rem;
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+      backdrop-filter: blur(10px);
+    }
+    h2 {
+      margin-top: 0;
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+      color: #e5e7eb;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      background: rgba(37, 99, 235, 0.2);
+      border: 1px solid rgba(59, 130, 246, 0.6);
+      color: #bfdbfe;
+      margin-bottom: 0.75rem;
+    }
+    a {
+      color: #60a5fa;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+    ul {
+      padding-left: 1.2rem;
+    }
+    footer {
+      text-align: center;
+      padding: 1.5rem 1rem 2rem;
+      font-size: 0.8rem;
+      color: #6b7280;
+    }
+    .cols {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 1.5rem;
+    }
+    @media (max-width: 768px) {
+      .cols {
+        grid-template-columns: minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Orbital Forge</div>
+    <div class="tagline">Blockchain infrastructure & validator operations</div>
+  </header>
+
+  <main>
+    <section>
+      <div class="pill">About</div>
+      <h2>What is Orbital Forge?</h2>
+      <p>
+        Orbital Forge, LLC is a blockchain infrastructure and tooling company focused on
+        secure, transparent, and resilient validator operations. We build and maintain
+        infrastructure so delegators can stake with confidence, and we contribute back to
+        the ecosystem through open tooling and Docker-based deployments.
+      </p>
+    </section>
+
+    <section>
+      <div class="pill">Validator</div>
+      <h2>The Expanse – Sentinel Network Validator</h2>
+      <p>
+        <strong>The Expanse</strong> is a validator on the Sentinel blockchain, operated by
+        Orbital Forge, LLC. Our goal is to provide reliable uptime, careful monitoring,
+        and defensive security practices while remaining an active participant in the
+        community.
+      </p>
+      <ul>
+        <li>Operated by a US-based, registered LLC (Orbital Forge, LLC)</li>
+        <li>Focus on security, observability, and fail-safe operations</li>
+        <li>Actively maintained Docker-based infrastructure for Sentinel</li>
+      </ul>
+      <p>
+        If you’re a delegator, you can support the network by staking with
+        <em>The Expanse</em>. (Validator address and explorer links will go here.)
+      </p>
+    </section>
+
+    <section class="cols">
+      <div>
+        <div class="pill">Tooling</div>
+        <h2>Docker & Infrastructure Contributions</h2>
+        <p>
+          Orbital Forge maintains and publishes Docker images and configuration that
+          simplify running nodes and validators on the Sentinel network. These resources
+          are designed for operators who want reproducible infrastructure and a clear
+          deployment story.
+        </p>
+        <ul>
+          <li>Versioned Docker images for Sentinel components</li>
+          <li>Example compose files and deployment patterns</li>
+          <li>Best practices for monitoring and updates</li>
+        </ul>
+        <p>
+          GitHub repositories and container registry links will be listed here as they
+          are published.
+        </p>
+      </div>
+      <div>
+        <div class="pill">Contact</div>
+        <h2>Work with Orbital Forge</h2>
+        <p>
+          For delegators, operators, or projects interested in collaborations:
+        </p>
+        <ul>
+          <li>Partnerships and infrastructure consulting</li>
+          <li>Custom validator deployments and tooling</li>
+          <li>Security, monitoring, and observability guidance</li>
+        </ul>
+        <p>
+          You can reach us at: <strong>info@orbitalforge.com</strong> (update this to your real contact).
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> Orbital Forge, LLC. All rights reserved.
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
