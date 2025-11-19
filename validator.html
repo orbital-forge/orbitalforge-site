@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>The Expanse | Sentinel Validator by Orbital Forge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/styles.css" />
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- NAVBAR -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="nav">
+          <a href="index.html" class="brand">
+            <img src="assets/orbitalforge-logo.png" class="brand-logo" />
+            <div class="brand-wordmark">
+              <span class="brand-name">Orbital Forge</span>
+              <span class="brand-tagline">Validator Operations</span>
+            </div>
+          </a>
+          <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a class="nav-active" href="validator.html">The Expanse Validator</a>
+            <a href="index.html#tooling">Tooling</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- MAIN -->
+    <main>
+
+      <section class="hero">
+        <div class="container hero-grid">
+          <div>
+            <div class="hero-kicker">Sentinel Network</div>
+            <h1 class="hero-title">The Expanse – operated by Orbital Forge</h1>
+            <p class="hero-subtitle">
+              A disciplined, security-focused Sentinel validator with strong observability and conservative operations.
+            </p>
+            <div class="hero-actions">
+              <a href="#" class="btn btn-primary">Explorer link</a>
+              <a href="index.html#tooling" class="btn btn-ghost">View tooling</a>
+            </div>
+          </div>
+
+          <aside class="hero-panel">
+            <div class="hero-panel-heading">
+              <div style="display:flex;align-items:center;gap:0.6rem;">
+                <img src="assets/the-expanse-logo.png" class="brand-logo" />
+                <div>
+                  <div class="hero-chip">Validator</div>
+                  <div style="font-size:0.95rem;margin-top:0.25rem;">The Expanse</div>
+                </div>
+              </div>
+
+              <div class="hero-pill">
+                <span>Status</span>
+                <span style="width:7px;height:7px;border-radius:999px;background:#22c55e;"></span>
+                <span>Monitoring</span>
+              </div>
+            </div>
+
+            <ul class="kv-list">
+              <li><span class="kv-key">Network</span><span class="kv-value">Sentinel</span></li>
+              <li><span class="kv-key">Operator</span><span class="kv-value">Orbital Forge</span></li>
+              <li><span class="kv-key">Commission</span><span class="kv-value">TBD%</span></li>
+              <li><span class="kv-key">Self-bond</span><span class="kv-value">TBD</span></li>
+            </ul>
+          </aside>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container two-col">
+          <div>
+            <div class="section-heading">
+              <div class="section-kicker">For Delegators</div>
+              <h2 class="section-title">Why stake with The Expanse?</h2>
+            </div>
+
+            <ul>
+              <li>Conservative upgrades to avoid unnecessary instability</li>
+              <li>Dedicated monitoring and alerting pipelines</li>
+              <li>US-based operator with identifiable accountability</li>
+              <li>Strong observability (logs, metrics, backups)</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-pill">Risk Philosophy</div>
+            <h3>Operational discipline</h3>
+            <p>
+              We prioritize uptime and predictable operations over chasing the newest features.
+              All upgrades and network changes are rehearsed and staged.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div class="section-kicker">How to stake</div>
+            <h2 class="section-title">Delegating to The Expanse</h2>
+          </div>
+
+          <div class="card-grid">
+            <article class="card">
+              <div class="card-pill">Step 1</div>
+              <h3>Locate the validator</h3>
+              <p>Search for “The Expanse” in your Sentinel-compatible wallet.</p>
+            </article>
+
+            <article class="card">
+              <div class="card-pill">Step 2</div>
+              <h3>Verify details</h3>
+              <p>Confirm commission rates and identity match this page.</p>
+            </article>
+
+            <article class="card">
+              <div class="card-pill">Step 3</div>
+              <h3>Delegate</h3>
+              <p>Delegate through your wallet and monitor rewards over time.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container two-col">
+          <div>
+            <div class="section-heading">
+              <div class="section-kicker">Transparency</div>
+              <h2 class="section-title">Announcements & Changes</h2>
+            </div>
+
+            <ul>
+              <li>Commission adjustments</li>
+              <li>Infrastructure upgrades</li>
+              <li>Operational incidents</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-pill">Questions?</div>
+            <h3>Contact the operator</h3>
+            <p>validator@orbitalforge.com</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>&copy; <span id="year"></span> Orbital Forge, LLC.</div>
+        <div class="footer-links">
+          <a href="index.html">Home</a>
+          <a href="validator.html">The Expanse</a>
+          <a href="index.html#tooling">Tooling</a>
+          <a href="index.html#contact">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
+</body>
+</html>

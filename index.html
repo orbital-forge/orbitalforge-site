@@ -2,173 +2,218 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Orbital Forge | The Expanse Validator</title>
+  <title>Orbital Forge | Blockchain Infrastructure & Validator Operations</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="stylesheet" href="assets/styles.css" />
   <style>
-    body {
-      margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #050816;
-      color: #e5e7eb;
-      line-height: 1.6;
-    }
-    header {
-      padding: 2.5rem 1.5rem;
+    .hero-banner {
+      position: relative;
+      width: 100%;
+      height: 420px;
+      background-image: url("assets/orbitalforge-hero-banner.png");
+      background-size: cover;
+      background-position: center;
+      border-bottom: 1px solid rgba(148,163,184,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       text-align: center;
-      background: radial-gradient(circle at top, #1d4ed8 0, #050816 55%);
     }
-    .logo {
-      font-size: 2rem;
+
+    .hero-banner-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, rgba(2,6,23,0.1), rgba(2,6,23,0.9));
+    }
+
+    .hero-banner-content {
+      position: relative;
+      z-index: 2;
+      padding: 1rem;
+    }
+
+    .hero-banner-title {
+      font-size: 2.8rem;
       font-weight: 700;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-    }
-    .tagline {
-      margin-top: 0.5rem;
-      font-size: 0.95rem;
-      color: #9ca3af;
-    }
-    main {
-      max-width: 960px;
-      margin: 0 auto;
-      padding: 2rem 1.5rem 3rem;
-    }
-    section {
-      margin-bottom: 2.5rem;
-      border-radius: 0.75rem;
-      padding: 1.75rem 1.5rem;
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid rgba(148, 163, 184, 0.15);
-      backdrop-filter: blur(10px);
-    }
-    h2 {
-      margin-top: 0;
-      font-size: 1.4rem;
-      margin-bottom: 0.75rem;
+      margin: 0;
       color: #e5e7eb;
+      text-shadow: 0 0 18px rgba(0,0,0,0.8);
     }
-    .pill {
-      display: inline-block;
-      padding: 0.15rem 0.6rem;
-      border-radius: 999px;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      background: rgba(37, 99, 235, 0.2);
-      border: 1px solid rgba(59, 130, 246, 0.6);
-      color: #bfdbfe;
-      margin-bottom: 0.75rem;
-    }
-    a {
-      color: #60a5fa;
-      text-decoration: none;
-    }
-    a:hover {
-      text-decoration: underline;
-    }
-    ul {
-      padding-left: 1.2rem;
-    }
-    footer {
-      text-align: center;
-      padding: 1.5rem 1rem 2rem;
-      font-size: 0.8rem;
-      color: #6b7280;
-    }
-    .cols {
-      display: grid;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      gap: 1.5rem;
-    }
-    @media (max-width: 768px) {
-      .cols {
-        grid-template-columns: minmax(0, 1fr);
-      }
+
+    .hero-banner-sub {
+      font-size: 1.1rem;
+      margin-top: 0.6rem;
+      color: #9ca3af;
+      text-shadow: 0 0 12px rgba(0,0,0,0.7);
     }
   </style>
 </head>
+
 <body>
-  <header>
-    <div class="logo">Orbital Forge</div>
-    <div class="tagline">Blockchain infrastructure & validator operations</div>
-  </header>
+  <div class="page">
 
-  <main>
-    <section>
-      <div class="pill">About</div>
-      <h2>What is Orbital Forge?</h2>
-      <p>
-        Orbital Forge, LLC is a blockchain infrastructure and tooling company focused on
-        secure, transparent, and resilient validator operations. We build and maintain
-        infrastructure so delegators can stake with confidence, and we contribute back to
-        the ecosystem through open tooling and Docker-based deployments.
-      </p>
-    </section>
-
-    <section>
-      <div class="pill">Validator</div>
-      <h2>The Expanse – Sentinel Network Validator</h2>
-      <p>
-        <strong>The Expanse</strong> is a validator on the Sentinel blockchain, operated by
-        Orbital Forge, LLC. Our goal is to provide reliable uptime, careful monitoring,
-        and defensive security practices while remaining an active participant in the
-        community.
-      </p>
-      <ul>
-        <li>Operated by a US-based, registered LLC (Orbital Forge, LLC)</li>
-        <li>Focus on security, observability, and fail-safe operations</li>
-        <li>Actively maintained Docker-based infrastructure for Sentinel</li>
-      </ul>
-      <p>
-        If you’re a delegator, you can support the network by staking with
-        <em>The Expanse</em>. (Validator address and explorer links will go here.)
-      </p>
-    </section>
-
-    <section class="cols">
-      <div>
-        <div class="pill">Tooling</div>
-        <h2>Docker & Infrastructure Contributions</h2>
-        <p>
-          Orbital Forge maintains and publishes Docker images and configuration that
-          simplify running nodes and validators on the Sentinel network. These resources
-          are designed for operators who want reproducible infrastructure and a clear
-          deployment story.
-        </p>
-        <ul>
-          <li>Versioned Docker images for Sentinel components</li>
-          <li>Example compose files and deployment patterns</li>
-          <li>Best practices for monitoring and updates</li>
-        </ul>
-        <p>
-          GitHub repositories and container registry links will be listed here as they
-          are published.
-        </p>
+    <!-- NAVBAR -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="nav">
+          <a href="index.html" class="brand">
+            <img src="assets/orbitalforge-logo.png" class="brand-logo" alt="Orbital Forge logo" />
+            <div class="brand-wordmark">
+              <span class="brand-name">Orbital Forge</span>
+              <span class="brand-tagline">Blockchain Infrastructure</span>
+            </div>
+          </a>
+          <div class="nav-links">
+            <a href="index.html" class="nav-active">Home</a>
+            <a href="validator.html">The Expanse Validator</a>
+            <a href="#tooling">Tooling</a>
+            <a href="#contact">Contact</a>
+          </div>
+        </nav>
       </div>
-      <div>
-        <div class="pill">Contact</div>
-        <h2>Work with Orbital Forge</h2>
-        <p>
-          For delegators, operators, or projects interested in collaborations:
-        </p>
-        <ul>
-          <li>Partnerships and infrastructure consulting</li>
-          <li>Custom validator deployments and tooling</li>
-          <li>Security, monitoring, and observability guidance</li>
-        </ul>
-        <p>
-          You can reach us at: <strong>info@orbitalforge.com</strong> (update this to your real contact).
-        </p>
+    </header>
+
+    <!-- HERO BANNER -->
+    <section class="hero-banner">
+      <div class="hero-banner-overlay"></div>
+      <div class="hero-banner-content">
+        <h1 class="hero-banner-title">Orbital Forge</h1>
+        <p class="hero-banner-sub">Operating “The Expanse” — A Sentinel Network Validator</p>
       </div>
     </section>
-  </main>
 
-  <footer>
-    &copy; <span id="year"></span> Orbital Forge, LLC. All rights reserved.
-  </footer>
+    <!-- MAIN CONTENT -->
+    <main>
+      <section class="section">
+        <div class="container hero-grid">
+          <div>
+            <div class="hero-kicker">Orbital Forge, LLC</div>
+            <h2 class="hero-title">Resilient blockchain infrastructure forged for Sentinel.</h2>
+            <p class="hero-subtitle">
+              Orbital Forge operates the Sentinel validator <strong>The Expanse</strong> and contributes
+              Docker-based tooling for operators seeking robust, repeatable, secure deployments.
+            </p>
+            <div class="hero-actions">
+              <a href="validator.html" class="btn btn-primary">Stake with The Expanse</a>
+              <a href="#tooling" class="btn btn-ghost">Explore tooling</a>
+            </div>
+          </div>
 
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+          <aside class="hero-panel">
+            <div class="hero-panel-heading">
+              <div>
+                <div class="hero-chip">Validator</div>
+                <div style="font-size:0.9rem;margin-top:0.3rem;">The Expanse (Sentinel)</div>
+              </div>
+              <div class="hero-pill">
+                <span>Status</span>
+                <span style="width:7px;height:7px;border-radius:50%;background:#22c55e;"></span>
+                <span>Monitoring</span>
+              </div>
+            </div>
+            <ul class="kv-list">
+              <li><span class="kv-key">Network</span><span class="kv-value">Sentinel</span></li>
+              <li><span class="kv-key">Operator</span><span class="kv-value">Orbital Forge, LLC</span></li>
+              <li><span class="kv-key">Commission</span><span class="kv-value">TBD%</span></li>
+              <li><span class="kv-key">Location</span><span class="kv-value">US-based</span></li>
+            </ul>
+            <p style="font-size:0.8rem;color:#9ca3af;margin-top:0.6rem;">
+              More details on the validator page, including explorer links.
+            </p>
+          </aside>
+        </div>
+      </section>
+
+      <!-- CARDS -->
+      <section class="section">
+        <div class="container">
+          <div class="section-heading">
+            <div class="section-kicker">What we do</div>
+            <h2 class="section-title">Infrastructure built for reliability.</h2>
+          </div>
+
+          <div class="card-grid">
+            <article class="card">
+              <div class="card-pill">Validator Operations</div>
+              <h3>High-availability Sentinel validator</h3>
+              <p>Uptime, conservative upgrades, and deliberate operations.</p>
+            </article>
+
+            <article class="card">
+              <div class="card-pill">Tooling</div>
+              <h3>Docker-based deployment</h3>
+              <p>Reliable, repeatable patterns for Sentinel operators.</p>
+            </article>
+
+            <article class="card">
+              <div class="card-pill">Security</div>
+              <h3>Observability-first architecture</h3>
+              <p>Logs, metrics, backups — treated as baseline functionality.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- TOOLING -->
+      <section class="section" id="tooling">
+        <div class="container two-col">
+          <div>
+            <div class="section-heading">
+              <div class="section-kicker">Tooling</div>
+              <h2 class="section-title">Sentinel Docker images & examples.</h2>
+            </div>
+            <ul>
+              <li>Versioned Docker images aligned to Sentinel releases</li>
+              <li>Example compose files</li>
+              <li>Monitoring & logging defaults</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-pill">Coming soon</div>
+            <h3>Repositories & Registry</h3>
+            <p>Will list GH repos, GHCR repos, and guides.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CONTACT -->
+      <section class="section" id="contact">
+        <div class="container two-col">
+          <div>
+            <div class="section-heading">
+              <div class="section-kicker">Contact</div>
+              <h2 class="section-title">Work with Orbital Forge.</h2>
+            </div>
+            <ul>
+              <li>Delegator support</li>
+              <li>Infrastructure questions</li>
+              <li>Validator partnerships</li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <div class="card-pill">Email</div>
+            <h3>Primary contact</h3>
+            <p>info@orbitalforge.com</p>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div>&copy; <span id="year"></span> Orbital Forge, LLC.</div>
+        <div class="footer-links">
+          <a href="validator.html">The Expanse</a>
+          <a href="#tooling">Tooling</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+  <script>document.getElementById("year").textContent = new Date().getFullYear();</script>
 </body>
 </html>
