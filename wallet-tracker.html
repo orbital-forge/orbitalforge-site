@@ -1,0 +1,633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Orbital Forge | The Expanse Delegation Leaderboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Reuse your main site styles -->
+  <link rel="stylesheet" href="assets/styles.css" />
+
+  <style>
+    /* Page-specific styling for the leaderboard */
+    .page-header {
+      padding: 3rem 0 1.5rem;
+      border-bottom: 1px solid var(--border-subtle);
+      background: radial-gradient(circle at top, rgba(56,189,248,0.18), transparent 55%);
+    }
+
+    .page-header h1 {
+      font-size: 2.1rem;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      margin: 0 0 0.75rem;
+    }
+
+    .page-header .eyebrow {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      margin-bottom: 0.5rem;
+    }
+
+    .page-header p {
+      max-width: 640px;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .leaderboard-card {
+      margin-top: 2rem;
+      background: var(--bg-elevated);
+      border-radius: var(--radius-lg);
+      border: 1px solid var(--border-subtle);
+      padding: 1.5rem 1.5rem 1.25rem;
+      box-shadow: 0 22px 60px rgba(15,23,42,0.75);
+    }
+
+    .leaderboard-header {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .leaderboard-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      padding: 0.25rem 0.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.8);
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      white-space: nowrap;
+    }
+
+    .pill strong {
+      color: var(--text-main);
+      font-weight: 500;
+    }
+
+    .pill--accent {
+      border-color: rgba(56,189,248,0.7);
+      background: var(--primary-soft);
+      color: var(--primary);
+    }
+
+    .pill--warning {
+      border-color: rgba(249,115,22,0.7);
+      background: rgba(249,115,22,0.12);
+      color: var(--warning);
+    }
+
+    .leaderboard-actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-ghost {
+      border-radius: var(--radius-pill);
+      padding: 0.45rem 0.9rem;
+      border: 1px solid rgba(148,163,184,0.5);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.16s ease-out;
+    }
+
+    .btn-ghost:hover {
+      border-color: rgba(56,189,248,0.7);
+      color: var(--primary);
+      transform: translateY(-1px);
+    }
+
+    .status-message {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin: 0.25rem 0 0.75rem;
+      min-height: 1.2em;
+    }
+
+    .status-message--error {
+      color: #fca5a5;
+    }
+
+    .leaderboard-table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin-top: 0.75rem;
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,0.9);
+      background: radial-gradient(circle at top left, rgba(56,189,248,0.06), transparent 55%),
+                  radial-gradient(circle at bottom right, rgba(99,102,241,0.06), transparent 55%),
+                  rgba(15,23,42,0.9);
+    }
+
+    table.leaderboard-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.86rem;
+    }
+
+    .leaderboard-table thead {
+      background: rgba(15,23,42,0.96);
+    }
+
+    .leaderboard-table th,
+    .leaderboard-table td {
+      padding: 0.6rem 0.9rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .leaderboard-table th {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+      border-bottom: 1px solid rgba(148,163,184,0.35);
+    }
+
+    .leaderboard-table tbody tr {
+      border-bottom: 1px solid rgba(15,23,42,0.96);
+      transition: background 0.12s ease-out, transform 0.08s ease-out;
+    }
+
+    .leaderboard-table tbody tr:hover {
+      background: rgba(15,23,42,0.9);
+      transform: translateY(-1px);
+    }
+
+    .leaderboard-table td {
+      color: var(--text-main);
+    }
+
+    .rank-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 1.7rem;
+      height: 1.7rem;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.55);
+      font-size: 0.78rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), rgba(15,23,42,0.95));
+    }
+
+    .rank-badge--gold {
+      border-color: rgba(250,204,21,0.9);
+      background: radial-gradient(circle at top, rgba(250,204,21,0.12), rgba(15,23,42,0.96));
+      color: #facc15;
+    }
+
+    .rank-badge--silver {
+      border-color: rgba(148,163,184,0.9);
+      background: radial-gradient(circle at top, rgba(148,163,184,0.16), rgba(15,23,42,0.96));
+      color: #e5e7eb;
+    }
+
+    .rank-badge--bronze {
+      border-color: rgba(248,113,113,0.9);
+      background: radial-gradient(circle at top, rgba(248,113,113,0.16), rgba(15,23,42,0.96));
+      color: #fed7aa;
+    }
+
+    .address-mono {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    .address-mono strong {
+      color: var(--text-main);
+    }
+
+    .tag-foundation {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.25rem;
+      padding: 0.16rem 0.6rem;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    .tag-foundation-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .cell-right {
+      text-align: right;
+    }
+
+    .muted {
+      color: var(--text-muted);
+      font-size: 0.78rem;
+    }
+
+    @media (max-width: 720px) {
+      .leaderboard-header {
+        align-items: flex-start;
+      }
+      .leaderboard-actions {
+        width: 100%;
+        justify-content: flex-start;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <!-- NAVBAR -->
+    <header class="site-header">
+      <div class="container">
+        <nav class="nav">
+          <a href="index.html" class="brand">
+            <img src="assets/orbitalforge-logo.png" class="brand-logo" alt="Orbital Forge logo" />
+            <div class="brand-wordmark">
+              <span class="brand-name">Orbital Forge</span>
+              <span class="brand-tagline">Blockchain Infrastructure</span>
+            </div>
+          </a>
+          <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="validator.html">The Expanse Validator</a>
+            <a href="wallet-tracker.html" class="nav-active">Wallet Tracker</a>
+            <a href="index.html#tooling">Tooling</a>
+            <a href="index.html#contact">Contact</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <!-- CONTENT -->
+    <main>
+      <section class="page-header">
+        <div class="container">
+          <div class="eyebrow">The Expanse · Sentinel Validator</div>
+          <h1>Delegation Leaderboard</h1>
+          <p>
+            A live view of wallets supporting <strong>The Expanse</strong> on the Sentinel network.
+            Data is pulled directly from the public LCD API and normalized to DVPN (6 decimal places).
+          </p>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container">
+          <div class="leaderboard-card">
+            <div class="leaderboard-header">
+              <div class="leaderboard-meta">
+                <span class="pill pill--accent">
+                  Total Delegated:
+                  <strong id="total-delegated">–</strong>
+                  <span class="muted">DVPN</span>
+                </span>
+                <span class="pill">
+                  Delegators:
+                  <strong id="delegator-count">–</strong>
+                </span>
+                <span class="pill pill--warning">
+                  Commission:
+                  <strong>5%</strong>
+                </span>
+              </div>
+
+              <div class="leaderboard-actions">
+                <button id="refresh-button" class="btn-ghost" type="button">
+                  <span>↻</span>
+                  <span>Refresh</span>
+                </button>
+                <a class="btn-ghost" href="https://explorer.sentinel.co/validators" target="_blank" rel="noopener">
+                  <span>↗</span>
+                  <span>View on Explorer</span>
+                </a>
+              </div>
+            </div>
+
+            <p id="status-message" class="status-message">
+              Fetching delegations from Sentinel LCD…
+            </p>
+
+            <div class="leaderboard-table-wrapper">
+              <table class="leaderboard-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Wallet</th>
+                    <th class="cell-right">Delegated DVPN</th>
+                    <th class="cell-right">% of Validator Stake</th>
+                    <th>Tags</th>
+                  </tr>
+                </thead>
+                <tbody id="leaderboard-body">
+                  <!-- rows inserted by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <p class="muted" style="margin-top: 0.6rem;">
+              Values are approximate and based on on-chain staking data. Smaller delegations may be
+              truncated if the API pagination limit is reached.
+            </p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <div class="footer-left">
+          <span class="footer-brand">Orbital Forge</span>
+          <span class="footer-copy">© <span id="year"></span> Orbital Forge LLC · All rights reserved.</span>
+        </div>
+        <div class="footer-links">
+          <a href="https://github.com/orbital-forge" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://explorer.sentinel.co" target="_blank" rel="noopener">Sentinel Explorer</a>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    // ========= CONFIG =========
+    // TODO: replace this with your real validator operator address (valoper)
+    // Example format: sentvaloper1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    const VALOPER_ADDRESS = "sentvaloper19cg7hegkp7z5gpv8xgm3y0wxkzzmw8knafk85t";
+
+    // Sentinel public LCD endpoint (documented here: https://lcd.sentinel.co) 
+    const LCD_BASE = "https://lcd.sentinel.co";
+
+    // DVPN has base denom "udvpn" with exponent 6 → 1 DVPN = 10^6 udvpn 
+    const DVPN_EXPONENT = 6;
+
+    // Optionally mark "foundational wallets" so they get a badge in the table.
+    // Fill these in once you decide which addresses count as foundation.
+    const FOUNDATIONAL_WALLETS = [
+       "sent1p3hta793yukw9p3hfwct0gdnzzf7vvvwwdys3z",
+       "sent1vv8kmwrs24j5emzw8dp7k8satgea62l7knegd7"
+    ];
+
+    // ========= HELPERS =========
+
+    function formatDvpnFromBase(amountStr) {
+      const num = Number(amountStr || "0");
+      const dvpn = num / Math.pow(10, DVPN_EXPONENT);
+      return dvpn.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function abbreviateAddress(addr) {
+      if (!addr || addr.length <= 12) return addr || "";
+      return addr.slice(0, 7) + "…" + addr.slice(-5);
+    }
+
+    function isFoundationWallet(addr) {
+      return FOUNDATIONAL_WALLETS.some(f => f.trim() === addr.trim());
+    }
+
+    function setStatus(message, isError = false) {
+      const el = document.getElementById("status-message");
+      if (!el) return;
+      el.textContent = message;
+      el.classList.toggle("status-message--error", !!isError);
+    }
+
+    function setTotals(totalDelegated, count) {
+      const totalEl = document.getElementById("total-delegated");
+      const countEl = document.getElementById("delegator-count");
+      if (totalEl) totalEl.textContent = totalDelegated.toLocaleString(undefined, {
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2
+      });
+      if (countEl) countEl.textContent = count.toString();
+    }
+
+    function applyRankClass(rank) {
+      if (rank === 1) return "rank-badge rank-badge--gold";
+      if (rank === 2) return "rank-badge rank-badge--silver";
+      if (rank === 3) return "rank-badge rank-badge--bronze";
+      return "rank-badge";
+    }
+
+    // ========= DATA FETCH =========
+
+    async function fetchAllDelegations() {
+      if (!VALOPER_ADDRESS || VALOPER_ADDRESS.startsWith("REPLACE_")) {
+        throw new Error("VALOPER_ADDRESS is not configured yet.");
+      }
+
+      let nextKey = null;
+      const all = [];
+      let page = 0;
+      const limit = 200; // tune if needed
+
+      do {
+        page += 1;
+        const url = new URL(
+          `/cosmos/staking/v1beta1/validators/${VALOPER_ADDRESS}/delegations`,
+          LCD_BASE
+        );
+        url.searchParams.set("pagination.limit", String(limit));
+        if (nextKey) {
+          url.searchParams.set("pagination.key", nextKey);
+        }
+
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+          const text = await res.text();
+          console.error("LCD error", res.status, text);
+          throw new Error(`LCD returned HTTP ${res.status}`);
+        }
+
+        const data = await res.json();
+        const responses = data.delegation_responses || [];
+        all.push(...responses);
+
+        const pag = data.pagination || {};
+        nextKey = pag.next_key && pag.next_key.length ? pag.next_key : null;
+
+        // Safety limit: if something goes weird with pagination, don't loop forever
+        if (page > 25) {
+          console.warn("Pagination exceeded 25 pages, stopping early for safety.");
+          nextKey = null;
+        }
+      } while (nextKey);
+
+      return all;
+    }
+
+    // ========= RENDERING =========
+
+    function buildLeaderboard(delegationResponses) {
+      const tbody = document.getElementById("leaderboard-body");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+
+      if (!delegationResponses || delegationResponses.length === 0) {
+        setStatus("No delegations found for this validator yet.", false);
+        setTotals(0, 0);
+        return;
+      }
+
+      // Aggregate by delegator address in case there are multiple entries
+      const byDelegator = new Map();
+
+      for (const resp of delegationResponses) {
+        const delegation = resp.delegation || {};
+        const balance = resp.balance || {};
+        const addr = delegation.delegator_address;
+        const amountStr = balance.amount || "0";
+        if (!addr) continue;
+
+        const prev = byDelegator.get(addr) || 0;
+        const next = prev + Number(amountStr);
+        byDelegator.set(addr, next);
+      }
+
+      // Convert to array and compute totals
+      let totalBase = 0;
+      const rows = [];
+
+      for (const [addr, baseAmount] of byDelegator.entries()) {
+        totalBase += baseAmount;
+        rows.push({ address: addr, baseAmount });
+      }
+
+      // Sort by delegated amount (descending)
+      rows.sort((a, b) => b.baseAmount - a.baseAmount);
+
+      const totalDvpn = totalBase / Math.pow(10, DVPN_EXPONENT);
+      setTotals(totalDvpn, rows.length);
+
+      // Render rows
+      rows.forEach((row, idx) => {
+        const rank = idx + 1;
+        const dvpn = row.baseAmount / Math.pow(10, DVPN_EXPONENT);
+        const pct = totalBase > 0 ? (row.baseAmount / totalBase) * 100 : 0;
+        const isFoundation = isFoundationWallet(row.address);
+
+        const tr = document.createElement("tr");
+
+        // Rank cell
+        const rankTd = document.createElement("td");
+        const badge = document.createElement("span");
+        badge.className = applyRankClass(rank);
+        badge.textContent = rank;
+        rankTd.appendChild(badge);
+        tr.appendChild(rankTd);
+
+        // Wallet cell
+        const walletTd = document.createElement("td");
+        const addrSpan = document.createElement("span");
+        addrSpan.className = "address-mono";
+        addrSpan.innerHTML = `<strong>${abbreviateAddress(row.address)}</strong>`;
+        walletTd.appendChild(addrSpan);
+        tr.appendChild(walletTd);
+
+        // Delegated DVPN
+        const dvpnTd = document.createElement("td");
+        dvpnTd.className = "cell-right";
+        dvpnTd.textContent = formatDvpnFromBase(String(row.baseAmount));
+        tr.appendChild(dvpnTd);
+
+        // % of validator stake
+        const pctTd = document.createElement("td");
+        pctTd.className = "cell-right muted";
+        pctTd.textContent = pct.toFixed(3) + " %";
+        tr.appendChild(pctTd);
+
+        // Tags
+        const tagTd = document.createElement("td");
+        if (isFoundation) {
+          const tag = document.createElement("span");
+          tag.className = "tag-foundation";
+          tag.innerHTML = `<span class="tag-foundation-dot"></span> Foundation`;
+          tagTd.appendChild(tag);
+        } else if (rank <= 3) {
+          const tag = document.createElement("span");
+          tag.className = "muted";
+          tag.textContent = "Top supporter";
+          tagTd.appendChild(tag);
+        } else {
+          tagTd.innerHTML = "&nbsp;";
+        }
+        tr.appendChild(tagTd);
+
+        tbody.appendChild(tr);
+      });
+
+      setStatus(`Loaded ${rows.length} delegators from Sentinel LCD.`, false);
+    }
+
+    async function refreshLeaderboard() {
+      try {
+        setStatus("Fetching delegations from Sentinel LCD…", false);
+        const responses = await fetchAllDelegations();
+        buildLeaderboard(responses);
+      } catch (err) {
+        console.error(err);
+        if (String(err.message || "").includes("VALOPER_ADDRESS")) {
+          setStatus("Configure your validator operator address in the script before using the leaderboard.", true);
+        } else {
+          setStatus("Failed to load delegations. LCD may be unreachable or CORS-blocked. Try again later.", true);
+        }
+      }
+    }
+
+    // ========= INIT =========
+
+    document.addEventListener("DOMContentLoaded", () => {
+      // Footer year
+      const yearEl = document.getElementById("year");
+      if (yearEl) {
+        yearEl.textContent = new Date().getFullYear();
+      }
+
+      const refreshBtn = document.getElementById("refresh-button");
+      if (refreshBtn) {
+        refreshBtn.addEventListener("click", () => {
+          refreshLeaderboard();
+        });
+      }
+
+      // Initial load
+      refreshLeaderboard();
+    });
+  </script>
+</body>
+</html>
