@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="assets/styles.css" />
 
   <style>
-    /* Page-specific styling for the leaderboard */
+    /* Page-specific styling for the leaderboard + foundation view */
     .page-header {
       padding: 3rem 0 1.5rem;
       border-bottom: 1px solid var(--border-subtle);
@@ -38,7 +38,8 @@
       font-size: 0.95rem;
     }
 
-    .leaderboard-card {
+    .leaderboard-card,
+    .foundation-card {
       margin-top: 2rem;
       background: var(--bg-elevated);
       border-radius: var(--radius-lg);
@@ -47,7 +48,8 @@
       box-shadow: 0 22px 60px rgba(15,23,42,0.75);
     }
 
-    .leaderboard-header {
+    .leaderboard-header,
+    .foundation-header {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
@@ -56,7 +58,8 @@
       margin-bottom: 1rem;
     }
 
-    .leaderboard-meta {
+    .leaderboard-meta,
+    .foundation-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
@@ -95,7 +98,8 @@
       color: var(--warning);
     }
 
-    .leaderboard-actions {
+    .leaderboard-actions,
+    .foundation-actions {
       display: flex;
       gap: 0.75rem;
     }
@@ -131,7 +135,8 @@
       color: #fca5a5;
     }
 
-    .leaderboard-table-wrapper {
+    .leaderboard-table-wrapper,
+    .foundation-table-wrapper {
       width: 100%;
       overflow-x: auto;
       margin-top: 0.75rem;
@@ -142,24 +147,25 @@
                   rgba(15,23,42,0.9);
     }
 
-    table.leaderboard-table {
+    table.leaderboard-table,
+    table.foundation-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.86rem;
     }
 
-    .leaderboard-table thead {
+    thead {
       background: rgba(15,23,42,0.96);
     }
 
-    .leaderboard-table th,
-    .leaderboard-table td {
+    th,
+    td {
       padding: 0.6rem 0.9rem;
       text-align: left;
       white-space: nowrap;
     }
 
-    .leaderboard-table th {
+    th {
       font-size: 0.7rem;
       text-transform: uppercase;
       letter-spacing: 0.16em;
@@ -167,17 +173,17 @@
       border-bottom: 1px solid rgba(148,163,184,0.35);
     }
 
-    .leaderboard-table tbody tr {
+    tbody tr {
       border-bottom: 1px solid rgba(15,23,42,0.96);
       transition: background 0.12s ease-out, transform 0.08s ease-out;
     }
 
-    .leaderboard-table tbody tr:hover {
+    tbody tr:hover {
       background: rgba(15,23,42,0.9);
       transform: translateY(-1px);
     }
 
-    .leaderboard-table td {
+    td {
       color: var(--text-main);
     }
 
@@ -186,7 +192,7 @@
       align-items: center;
       justify-content: center;
       min-width: 1.7rem;
-      height: 1.7rem;
+      height: 1.1.7rem;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.55);
       font-size: 0.78rem;
@@ -253,10 +259,12 @@
     }
 
     @media (max-width: 720px) {
-      .leaderboard-header {
+      .leaderboard-header,
+      .foundation-header {
         align-items: flex-start;
       }
-      .leaderboard-actions {
+      .leaderboard-actions,
+      .foundation-actions {
         width: 100%;
         justify-content: flex-start;
       }
@@ -291,17 +299,61 @@
 
     <!-- CONTENT -->
     <main>
+      <!-- Header -->
       <section class="page-header">
         <div class="container">
           <div class="eyebrow">The Expanse · Sentinel Validator</div>
-          <h1>Delegation Leaderboard</h1>
+          <h1>Delegation Leaderboard & Foundation Wallets</h1>
           <p>
-            A live view of wallets supporting <strong>The Expanse</strong> on the Sentinel network.
-            Data is pulled directly from the public LCD API and normalized to DVPN (6 decimal places).
+            A live view of wallets supporting <strong>The Expanse</strong> and the current state of
+            designated <strong>foundation wallets</strong> on the Sentinel network. Values are derived
+            from the public LCD API and normalized to DVPN (6 decimal places).
           </p>
         </div>
       </section>
 
+      <!-- Foundation Wallets -->
+      <section class="section">
+        <div class="container">
+          <div class="foundation-card">
+            <div class="foundation-header">
+              <div>
+                <h2 style="font-size:1.1rem;margin:0 0 0.25rem;">Foundation Wallets Overview</h2>
+                <p class="muted" style="margin:0;">
+                  These wallets are tracked explicitly, even if they are not currently delegating to
+                  <strong>The Expanse</strong>. Balances shown are liquid DVPN (bank balances), not including staked DVPN.
+                </p>
+              </div>
+              <div class="foundation-actions">
+                <button id="foundation-refresh-button" class="btn-ghost" type="button">
+                  <span>↻</span>
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            <p id="foundation-status-message" class="status-message">
+              Fetching foundation wallet balances…
+            </p>
+
+            <div class="foundation-table-wrapper">
+              <table class="foundation-table">
+                <thead>
+                  <tr>
+                    <th>Wallet</th>
+                    <th class="cell-right">Liquid DVPN</th>
+                  </tr>
+                </thead>
+                <tbody id="foundation-body">
+                  <!-- Filled by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Delegation Leaderboard -->
       <section class="section">
         <div class="container">
           <div class="leaderboard-card">
@@ -382,23 +434,22 @@
 
   <script>
     // ========= CONFIG =========
-    // TODO: replace this with your real validator operator address (valoper)
-    // Example format: sentvaloper1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+    // Replace this with your real validator operator address (valoper).
     const VALOPER_ADDRESS = "sentvaloper19cg7hegkp7z5gpv8xgm3y0wxkzzmw8knafk85t";
 
-    // Sentinel public LCD endpoint (documented here: https://lcd.sentinel.co) 
+    // Sentinel public LCD endpoint.
     const LCD_BASE = "https://lcd.sentinel.co";
 
-    // DVPN has base denom "udvpn" with exponent 6 → 1 DVPN = 10^6 udvpn 
+    // DVPN exponent: 1 DVPN = 10^6 udvpn
     const DVPN_EXPONENT = 6;
 
-    // Optionally mark "foundational wallets" so they get a badge in the table.
-    // Fill these in once you decide which addresses count as foundation.
+    // Foundation wallets you want to track (even if not delegating to you).
     const FOUNDATIONAL_WALLETS = [
-       "sent1t7f57wx8lfm8y4eeq5vk2cf5cnsq5d7264rstt",
-       "sent1vv8kmwrs24j5emzw8dp7k8satgea62l7knegd7",
-	   "sent1g43sfz85jnelkc0j5aleuh68upy3k0x2ypdl9v"
+        "sent1p3hta793yukw9p3hfwct0gdnzzf7vvvwwdys3z",
+        "sent1vv8kmwrs24j5emzw8dp7k8satgea62l7knegd7"
     ];
+
+    const DVPN_DENOM = "udvpn";
 
     // ========= HELPERS =========
 
@@ -420,8 +471,8 @@
       return FOUNDATIONAL_WALLETS.some(f => f.trim() === addr.trim());
     }
 
-    function setStatus(message, isError = false) {
-      const el = document.getElementById("status-message");
+    function setStatus(id, message, isError = false) {
+      const el = document.getElementById(id);
       if (!el) return;
       el.textContent = message;
       el.classList.toggle("status-message--error", !!isError);
@@ -444,7 +495,7 @@
       return "rank-badge";
     }
 
-    // ========= DATA FETCH =========
+    // ========= DELEGATION DATA (LEADERBOARD) =========
 
     async function fetchAllDelegations() {
       if (!VALOPER_ADDRESS || VALOPER_ADDRESS.startsWith("REPLACE_")) {
@@ -454,7 +505,7 @@
       let nextKey = null;
       const all = [];
       let page = 0;
-      const limit = 200; // tune if needed
+      const limit = 200;
 
       do {
         page += 1;
@@ -481,7 +532,6 @@
         const pag = data.pagination || {};
         nextKey = pag.next_key && pag.next_key.length ? pag.next_key : null;
 
-        // Safety limit: if something goes weird with pagination, don't loop forever
         if (page > 25) {
           console.warn("Pagination exceeded 25 pages, stopping early for safety.");
           nextKey = null;
@@ -491,8 +541,6 @@
       return all;
     }
 
-    // ========= RENDERING =========
-
     function buildLeaderboard(delegationResponses) {
       const tbody = document.getElementById("leaderboard-body");
       if (!tbody) return;
@@ -500,12 +548,11 @@
       tbody.innerHTML = "";
 
       if (!delegationResponses || delegationResponses.length === 0) {
-        setStatus("No delegations found for this validator yet.", false);
+        setStatus("status-message", "No delegations found for this validator yet.", false);
         setTotals(0, 0);
         return;
       }
 
-      // Aggregate by delegator address in case there are multiple entries
       const byDelegator = new Map();
 
       for (const resp of delegationResponses) {
@@ -520,7 +567,6 @@
         byDelegator.set(addr, next);
       }
 
-      // Convert to array and compute totals
       let totalBase = 0;
       const rows = [];
 
@@ -529,13 +575,11 @@
         rows.push({ address: addr, baseAmount });
       }
 
-      // Sort by delegated amount (descending)
       rows.sort((a, b) => b.baseAmount - a.baseAmount);
 
       const totalDvpn = totalBase / Math.pow(10, DVPN_EXPONENT);
       setTotals(totalDvpn, rows.length);
 
-      // Render rows
       rows.forEach((row, idx) => {
         const rank = idx + 1;
         const dvpn = row.baseAmount / Math.pow(10, DVPN_EXPONENT);
@@ -544,7 +588,6 @@
 
         const tr = document.createElement("tr");
 
-        // Rank cell
         const rankTd = document.createElement("td");
         const badge = document.createElement("span");
         badge.className = applyRankClass(rank);
@@ -552,7 +595,6 @@
         rankTd.appendChild(badge);
         tr.appendChild(rankTd);
 
-        // Wallet cell
         const walletTd = document.createElement("td");
         const addrSpan = document.createElement("span");
         addrSpan.className = "address-mono";
@@ -560,19 +602,16 @@
         walletTd.appendChild(addrSpan);
         tr.appendChild(walletTd);
 
-        // Delegated DVPN
         const dvpnTd = document.createElement("td");
         dvpnTd.className = "cell-right";
         dvpnTd.textContent = formatDvpnFromBase(String(row.baseAmount));
         tr.appendChild(dvpnTd);
 
-        // % of validator stake
         const pctTd = document.createElement("td");
         pctTd.className = "cell-right muted";
         pctTd.textContent = pct.toFixed(3) + " %";
         tr.appendChild(pctTd);
 
-        // Tags
         const tagTd = document.createElement("td");
         if (isFoundation) {
           const tag = document.createElement("span");
@@ -592,28 +631,89 @@
         tbody.appendChild(tr);
       });
 
-      setStatus(`Loaded ${rows.length} delegators from Sentinel LCD.`, false);
+      setStatus("status-message", `Loaded ${rows.length} delegators from Sentinel LCD.`, false);
     }
 
     async function refreshLeaderboard() {
       try {
-        setStatus("Fetching delegations from Sentinel LCD…", false);
+        setStatus("status-message", "Fetching delegations from Sentinel LCD…", false);
         const responses = await fetchAllDelegations();
         buildLeaderboard(responses);
       } catch (err) {
         console.error(err);
         if (String(err.message || "").includes("VALOPER_ADDRESS")) {
-          setStatus("Configure your validator operator address in the script before using the leaderboard.", true);
+          setStatus("status-message", "Configure your validator operator address in the script before using the leaderboard.", true);
         } else {
-          setStatus("Failed to load delegations. LCD may be unreachable or CORS-blocked. Try again later.", true);
+          setStatus("status-message", "Failed to load delegations. LCD may be unreachable or CORS-blocked. Try again later.", true);
         }
       }
+    }
+
+    // ========= FOUNDATION WALLET BALANCES =========
+
+    async function fetchFoundationBalance(address) {
+      const url = new URL(`/cosmos/bank/v1beta1/balances/${address}`, LCD_BASE);
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        console.error("Bank LCD error", res.status, await res.text());
+        throw new Error(`bank LCD returned HTTP ${res.status} for ${address}`);
+      }
+      const data = await res.json();
+      const balances = data.balances || [];
+      const dvpnBalance = balances.find(b => b.denom === DVPN_DENOM);
+      return {
+        address,
+        baseAmount: dvpnBalance ? Number(dvpnBalance.amount || "0") : 0
+      };
+    }
+
+    async function refreshFoundationWallets() {
+      const tbody = document.getElementById("foundation-body");
+      if (!tbody) return;
+
+      tbody.innerHTML = "";
+
+      if (!FOUNDATIONAL_WALLETS || FOUNDATIONAL_WALLETS.length === 0) {
+        setStatus("foundation-status-message", "No foundation wallets configured. Add them in the script to see their balances.", false);
+        return;
+      }
+
+      setStatus("foundation-status-message", "Fetching foundation wallet balances…", false);
+
+      const rows = [];
+      for (const addr of FOUNDATIONAL_WALLETS) {
+        const cleanAddr = addr.trim();
+        if (!cleanAddr) continue;
+
+        const tr = document.createElement("tr");
+        const walletTd = document.createElement("td");
+        walletTd.className = "address-mono";
+        walletTd.innerHTML = `<strong>${abbreviateAddress(cleanAddr)}</strong>`;
+        tr.appendChild(walletTd);
+
+        const balTd = document.createElement("td");
+        balTd.className = "cell-right";
+        balTd.textContent = "Loading…";
+        tr.appendChild(balTd);
+
+        tbody.appendChild(tr);
+
+        try {
+          const res = await fetchFoundationBalance(cleanAddr);
+          balTd.textContent = formatDvpnFromBase(String(res.baseAmount));
+        } catch (err) {
+          console.error(err);
+          balTd.textContent = "Error";
+          balTd.classList.add("muted");
+        }
+      }
+
+      setStatus("foundation-status-message", "Foundation wallet balances updated.", false);
     }
 
     // ========= INIT =========
 
     document.addEventListener("DOMContentLoaded", () => {
-      // Footer year
       const yearEl = document.getElementById("year");
       if (yearEl) {
         yearEl.textContent = new Date().getFullYear();
@@ -626,7 +726,15 @@
         });
       }
 
+      const fRefreshBtn = document.getElementById("foundation-refresh-button");
+      if (fRefreshBtn) {
+        fRefreshBtn.addEventListener("click", () => {
+          refreshFoundationWallets();
+        });
+      }
+
       // Initial load
+      refreshFoundationWallets();
       refreshLeaderboard();
     });
   </script>
