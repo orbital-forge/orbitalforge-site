@@ -73,7 +73,8 @@
     }
 
     .leaderboard-card,
-    .foundation-card {
+    .foundation-card,
+    .activity-card {
       margin-top: 2rem;
       background: var(--bg-elevated);
       border-radius: var(--radius-lg);
@@ -83,7 +84,8 @@
     }
 
     .leaderboard-header,
-    .foundation-header {
+    .foundation-header,
+    .activity-header {
       display: flex;
       flex-wrap: wrap;
       gap: 1rem;
@@ -93,7 +95,8 @@
     }
 
     .leaderboard-meta,
-    .foundation-meta {
+    .foundation-meta,
+    .activity-meta {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
@@ -133,7 +136,8 @@
     }
 
     .leaderboard-actions,
-    .foundation-actions {
+    .foundation-actions,
+    .activity-actions {
       display: flex;
       gap: 0.75rem;
     }
@@ -170,7 +174,8 @@
     }
 
     .leaderboard-table-wrapper,
-    .foundation-table-wrapper {
+    .foundation-table-wrapper,
+    .activity-table-wrapper {
       width: 100%;
       overflow-x: auto;
       margin-top: 0.75rem;
@@ -182,7 +187,8 @@
     }
 
     table.leaderboard-table,
-    table.foundation-table {
+    table.foundation-table,
+    table.activity-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.86rem;
@@ -302,13 +308,35 @@
       color: var(--text-main);
     }
 
+    .activity-wallet-filter {
+      min-width: 220px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.82rem;
+    }
+
+    .tx-hash-link {
+      font-size: 0.78rem;
+      text-decoration: none;
+      color: var(--accent);
+    }
+
+    .tx-hash-link span {
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
     @media (max-width: 720px) {
       .leaderboard-header,
-      .foundation-header {
+      .foundation-header,
+      .activity-header {
         align-items: flex-start;
       }
       .leaderboard-actions,
-      .foundation-actions {
+      .foundation-actions,
+      .activity-actions {
         width: 100%;
         justify-content: flex-start;
       }
@@ -353,7 +381,7 @@
           <h1>Validator Delegation Explorer</h1>
           <p>
             Explore delegation distribution for any active validator in the Sentinel set, and view
-            the current state of designated <strong>community wallets</strong>. Built by
+            the current state and activity of designated <strong>community wallets</strong>. Built by
             <strong>Orbital Forge</strong> to support validators and delegators across the network.
           </p>
 
@@ -428,6 +456,58 @@
                 </tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Community Wallet Activity -->
+      <section class="section">
+        <div class="container">
+          <div class="activity-card">
+            <div class="activity-header">
+              <div>
+                <h2 style="font-size:1.05rem;margin:0 0 0.25rem;">Community Wallet Activity</h2>
+                <p class="muted" style="margin:0;">
+                  Recent outgoing transactions from tracked community wallets. This focuses on DVPN bank
+                  sends (MsgSend) and shows destination addresses and amounts.
+                </p>
+              </div>
+              <div class="activity-actions">
+                <select id="activity-wallet-select" class="activity-wallet-filter">
+                  <option value="__all__">All community wallets</option>
+                </select>
+                <button id="activity-refresh-button" class="btn-ghost" type="button">
+                  <span>↻</span>
+                  <span>Refresh</span>
+                </button>
+              </div>
+            </div>
+
+            <p id="activity-status-message" class="status-message">
+              Fetching recent transactions for community wallets…
+            </p>
+
+            <div class="activity-table-wrapper">
+              <table class="activity-table">
+                <thead>
+                  <tr>
+                    <th>Time (UTC)</th>
+                    <th>From</th>
+                    <th>To</th>
+                    <th class="cell-right">Amount DVPN</th>
+                    <th>Tx Hash</th>
+                  </tr>
+                </thead>
+                <tbody id="activity-body">
+                  <!-- Filled by JS -->
+                </tbody>
+              </table>
+            </div>
+
+            <p class="muted" style="margin-top:0.6rem;">
+              Data is pulled from the Sentinel LCD transaction API. Only outgoing MsgSend transfers in DVPN
+              are shown. Some historical transactions may not appear if API pagination limits are reached.
+            </p>
           </div>
         </div>
       </section>
@@ -517,6 +597,7 @@
     const LCD_BASE = "https://lcd.sentinel.co";
     const DVPN_DENOM = "udvpn";
     const DVPN_EXPONENT = 6;
+    const TXS_PER_WALLET_LIMIT = 50; // how many txs to pull per wallet for activity view
 
     // Community wallets (any label you want: Foundation, DAO, Grants, etc.)
     const COMMUNITY_WALLETS = [
@@ -527,7 +608,7 @@
       {
         address: "sent1p3hta793yukw9p3hfwct0gdnzzf7vvvwwdys3z",
         label: "Multisig Community Funds"
-      }	  
+      }
       // Add more like:
       // { address: "sent1xxxx...", label: "Foundation" },
       // { address: "sent1yyyy...", label: "Grants" }
@@ -614,6 +695,13 @@
       }
       // If you have a specific explorer URL pattern for valoper, plug it in here.
       link.href = "https://explorer.sentinel.co/validators/" + currentValoper;
+    }
+
+    function formatTimestamp(ts) {
+      if (!ts) return "–";
+      const d = new Date(ts);
+      if (Number.isNaN(d.getTime())) return ts;
+      return d.toISOString().replace("T", " ").replace("Z", "");
     }
 
     // ========= VALIDATOR LIST & META =========
@@ -930,6 +1018,177 @@
       setStatus("foundation-status-message", "Community wallet balances updated.", false);
     }
 
+    // ========= COMMUNITY WALLET ACTIVITY (TX HISTORY) =========
+
+    async function fetchWalletTxs(address) {
+      // We query for transactions where this address is the message.sender.
+      const url = new URL("/cosmos/tx/v1beta1/txs", LCD_BASE);
+      url.searchParams.set("events", `message.sender='${address}'`);
+      url.searchParams.set("order_by", "ORDER_BY_DESC");
+      url.searchParams.set("pagination.limit", String(TXS_PER_WALLET_LIMIT));
+
+      const res = await fetch(url.toString());
+      if (!res.ok) {
+        console.error("TX LCD error", res.status, await res.text());
+        throw new Error(`tx LCD returned HTTP ${res.status} for ${address}`);
+      }
+
+      const data = await res.json();
+      const txs = data.txs || [];
+      const responses = data.tx_responses || [];
+
+      const rows = [];
+
+      for (let i = 0; i < txs.length; i++) {
+        const tx = txs[i];
+        const resp = responses[i] || {};
+        const msgs = tx.body?.messages || [];
+        const ts = resp.timestamp;
+        const txhash = resp.txhash;
+
+        for (const msg of msgs) {
+          const type = msg["@type"] || msg.type_url || "";
+          if (!type.includes("cosmos.bank.v1beta1.MsgSend")) continue;
+
+          if (msg.from_address !== address) continue; // only outgoing
+
+          const to = msg.to_address;
+          const amounts = msg.amount || [];
+          for (const coin of amounts) {
+            if (coin.denom !== DVPN_DENOM) continue;
+            rows.push({
+              from: address,
+              to,
+              baseAmount: Number(coin.amount || "0"),
+              timestamp: ts,
+              txhash
+            });
+          }
+        }
+      }
+
+      return rows;
+    }
+
+    function buildActivityTable(rows) {
+      const tbody = document.getElementById("activity-body");
+      if (!tbody) return;
+      tbody.innerHTML = "";
+
+      if (!rows || rows.length === 0) {
+        setStatus("activity-status-message", "No recent outgoing DVPN transfers found for the selected scope.", false);
+        return;
+      }
+
+      rows.forEach(row => {
+        const meta = getCommunityWalletMeta(row.from);
+        const tr = document.createElement("tr");
+
+        const timeTd = document.createElement("td");
+        timeTd.className = "muted";
+        timeTd.textContent = formatTimestamp(row.timestamp);
+        tr.appendChild(timeTd);
+
+        const fromTd = document.createElement("td");
+        fromTd.className = "address-mono";
+        const label = meta?.label ? meta.label + " · " : "";
+        fromTd.innerHTML = `<strong>${label}${abbreviateAddress(row.from)}</strong>`;
+        tr.appendChild(fromTd);
+
+        const toTd = document.createElement("td");
+        toTd.className = "address-mono";
+        toTd.innerHTML = `<strong>${abbreviateAddress(row.to)}</strong>`;
+        tr.appendChild(toTd);
+
+        const amtTd = document.createElement("td");
+        amtTd.className = "cell-right";
+        amtTd.textContent = formatDvpnFromBase(String(row.baseAmount));
+        tr.appendChild(amtTd);
+
+        const hashTd = document.createElement("td");
+        const a = document.createElement("a");
+        a.className = "tx-hash-link";
+        a.href = row.txhash
+          ? `https://explorer.sentinel.co/transactions/${row.txhash}`
+          : "#";
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.innerHTML = `<span>${row.txhash ? abbreviateAddress(row.txhash) : "–"}</span> ↗`;
+        hashTd.appendChild(a);
+        tr.appendChild(hashTd);
+
+        tbody.appendChild(tr);
+      });
+
+      setStatus("activity-status-message", `Showing ${rows.length} recent outgoing DVPN transfers.`, false);
+    }
+
+    async function refreshCommunityActivity() {
+      const tbody = document.getElementById("activity-body");
+      if (tbody) tbody.innerHTML = "";
+
+      if (!COMMUNITY_WALLETS || COMMUNITY_WALLETS.length === 0) {
+        setStatus("activity-status-message", "No community wallets configured. Add them in the script to see their activity.", false);
+        return;
+      }
+
+      const select = document.getElementById("activity-wallet-select");
+      const scope = select?.value || "__all__";
+
+      if (scope === "__all__") {
+        setStatus("activity-status-message", "Fetching recent transactions for all community wallets…", false);
+      } else {
+        const meta = getCommunityWalletMeta(scope);
+        const label = meta?.label || "community wallet";
+        setStatus("activity-status-message", `Fetching recent transactions for ${label}…`, false);
+      }
+
+      try {
+        let rows = [];
+
+        if (scope === "__all__") {
+          const promises = COMMUNITY_WALLETS.map(w =>
+            fetchWalletTxs(w.address).catch(err => {
+              console.error("Error fetching txs for", w.address, err);
+              return [];
+            })
+          );
+          const allResults = await Promise.all(promises);
+          allResults.forEach(r => rows.push(...r));
+        } else {
+          rows = await fetchWalletTxs(scope);
+        }
+
+        // Sort by timestamp desc
+        rows.sort((a, b) => {
+          const ta = new Date(a.timestamp || 0).getTime();
+          const tb = new Date(b.timestamp || 0).getTime();
+          return tb - ta;
+        });
+
+        buildActivityTable(rows);
+      } catch (err) {
+        console.error(err);
+        setStatus(
+          "activity-status-message",
+          "Failed to load activity. LCD may be unreachable or CORS-blocked. Try again later.",
+          true
+        );
+      }
+    }
+
+    function populateActivityWalletSelect() {
+      const select = document.getElementById("activity-wallet-select");
+      if (!select) return;
+      select.innerHTML = "";
+      select.appendChild(new Option("All community wallets", "__all__", true, true));
+      COMMUNITY_WALLETS.forEach(w => {
+        const label = w.label ? `${w.label} (${abbreviateAddress(w.address)})` : abbreviateAddress(w.address);
+        const opt = new Option(label, w.address, false, false);
+        select.appendChild(opt);
+      });
+    }
+
     // ========= INIT =========
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -947,6 +1206,20 @@
       if (fRefreshBtn) {
         fRefreshBtn.addEventListener("click", () => {
           refreshFoundationWallets();
+        });
+      }
+
+      const activityRefreshBtn = document.getElementById("activity-refresh-button");
+      if (activityRefreshBtn) {
+        activityRefreshBtn.addEventListener("click", () => {
+          refreshCommunityActivity();
+        });
+      }
+
+      const activityWalletSelect = document.getElementById("activity-wallet-select");
+      if (activityWalletSelect) {
+        activityWalletSelect.addEventListener("change", () => {
+          refreshCommunityActivity();
         });
       }
 
@@ -980,6 +1253,8 @@
 
       loadValidatorSet();
       refreshFoundationWallets();
+      populateActivityWalletSelect();
+      refreshCommunityActivity();
 
       // If you set DEFAULT_VALOPER, pre-load it
       if (DEFAULT_VALOPER) {
