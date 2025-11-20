@@ -426,7 +426,7 @@
                 <h2 style="font-size:1.1rem;margin:0 0 0.25rem;">Community Wallets Overview</h2>
                 <p class="muted" style="margin:0;">
                   These wallets are tracked explicitly, even if they are not currently delegating to
-                  a specific validator. Balances shown are liquid DVPN (bank balances), not including staked DVPN.
+                  a specific validator. Balances shown are liquid P2P (bank balances), not including staked P2P.
                   Each wallet is labeled by type (for example: Foundation, DAO, Grants, Community Pool).
                 </p>
               </div>
@@ -448,7 +448,7 @@
                   <tr>
                     <th>Wallet</th>
                     <th>Type</th>
-                    <th class="cell-right">Liquid DVPN</th>
+                    <th class="cell-right">Liquid P2P</th>
                   </tr>
                 </thead>
                 <tbody id="foundation-body">
@@ -468,7 +468,7 @@
               <div>
                 <h2 style="font-size:1.05rem;margin:0 0 0.25rem;">Community Wallet Activity</h2>
                 <p class="muted" style="margin:0;">
-                  Recent outgoing transactions from tracked community wallets. This focuses on DVPN bank
+                  Recent outgoing transactions from tracked community wallets. This focuses on P2P bank
                   sends (MsgSend) and shows destination addresses and amounts.
                 </p>
               </div>
@@ -494,7 +494,7 @@
                     <th>Time (UTC)</th>
                     <th>From</th>
                     <th>To</th>
-                    <th class="cell-right">Amount DVPN</th>
+                    <th class="cell-right">Amount P2P</th>
                     <th>Tx Hash</th>
                   </tr>
                 </thead>
@@ -505,7 +505,7 @@
             </div>
 
             <p class="muted" style="margin-top:0.6rem;">
-              Data is pulled from the Sentinel LCD transaction API. Only outgoing MsgSend transfers in DVPN
+              Data is pulled from the Sentinel LCD transaction API. Only outgoing MsgSend transfers in P2P
               are shown. Some historical transactions may not appear if API pagination limits are reached.
             </p>
           </div>
@@ -521,7 +521,7 @@
                 <span class="pill pill--accent">
                   Total Delegated:
                   <strong id="total-delegated">–</strong>
-                  <span class="muted">DVPN</span>
+                  <span class="muted">P2P</span>
                 </span>
                 <span class="pill">
                   Delegators:
@@ -555,7 +555,7 @@
                   <tr>
                     <th>#</th>
                     <th>Wallet</th>
-                    <th class="cell-right">Delegated DVPN</th>
+                    <th class="cell-right">Delegated P2P</th>
                     <th class="cell-right">% of Validator Stake</th>
                     <th>Tags</th>
                   </tr>
@@ -1077,7 +1077,7 @@
       tbody.innerHTML = "";
 
       if (!rows || rows.length === 0) {
-        setStatus("activity-status-message", "No recent outgoing DVPN transfers found for the selected scope.", false);
+        setStatus("activity-status-message", "No recent outgoing P2P transfers found for the selected scope.", false);
         return;
       }
 
@@ -1121,7 +1121,7 @@
         tbody.appendChild(tr);
       });
 
-      setStatus("activity-status-message", `Showing ${rows.length} recent outgoing DVPN transfers.`, false);
+      setStatus("activity-status-message", `Showing ${rows.length} recent outgoing P2P transfers.`, false);
     }
 
     async function refreshCommunityActivity() {
