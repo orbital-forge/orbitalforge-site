@@ -353,7 +353,7 @@
           <h1>Validator Delegation Explorer</h1>
           <p>
             Explore delegation distribution for any active validator in the Sentinel set, and view
-            the current state of designated <strong>foundation wallets</strong>. Built by
+            the current state of designated <strong>community wallets</strong>. Built by
             <strong>Orbital Forge</strong> to support validators and delegators across the network.
           </p>
 
@@ -389,16 +389,17 @@
         </div>
       </section>
 
-      <!-- Foundation Wallets -->
+      <!-- Community Wallets -->
       <section class="section">
         <div class="container">
           <div class="foundation-card">
             <div class="foundation-header">
               <div>
-                <h2 style="font-size:1.1rem;margin:0 0 0.25rem;">DAO Wallets Overview</h2>
+                <h2 style="font-size:1.1rem;margin:0 0 0.25rem;">Community Wallets Overview</h2>
                 <p class="muted" style="margin:0;">
                   These wallets are tracked explicitly, even if they are not currently delegating to
                   a specific validator. Balances shown are liquid DVPN (bank balances), not including staked DVPN.
+                  Each wallet is labeled by type (for example: Foundation, DAO, Grants, Community Pool).
                 </p>
               </div>
               <div class="foundation-actions">
@@ -410,7 +411,7 @@
             </div>
 
             <p id="foundation-status-message" class="status-message">
-              Fetching DAO wallet balances…
+              Fetching community wallet balances…
             </p>
 
             <div class="foundation-table-wrapper">
@@ -418,6 +419,7 @@
                 <thead>
                   <tr>
                     <th>Wallet</th>
+                    <th>Type</th>
                     <th class="cell-right">Liquid DVPN</th>
                   </tr>
                 </thead>
@@ -516,9 +518,19 @@
     const DVPN_DENOM = "udvpn";
     const DVPN_EXPONENT = 6;
 
-    // Your foundation wallets (can be anyone, not tied to a specific validator)
-    const FOUNDATIONAL_WALLETS = [
-      "sent1t7f57wx8lfm8y4eeq5vk2cf5cnsq5d7264rstt"
+    // Community wallets (any label you want: Foundation, DAO, Grants, etc.)
+    const COMMUNITY_WALLETS = [
+      {
+        address: "sent1t7f57wx8lfm8y4eeq5vk2cf5cnsq5d7264rstt",
+        label: "DAO"
+      },
+      {
+        address: "sent1p3hta793yukw9p3hfwct0gdnzzf7vvvwwdys3z",
+        label: "Multisig Community Funds"
+      }	  
+      // Add more like:
+      // { address: "sent1xxxx...", label: "Foundation" },
+      // { address: "sent1yyyy...", label: "Grants" }
     ];
 
     // Initial validator (optional) – if you want the page to default to The Expanse, put your valoper here.
@@ -579,8 +591,10 @@
       return "rank-badge";
     }
 
-    function isFoundationWallet(addr) {
-      return FOUNDATIONAL_WALLETS.some(f => f.trim() === addr.trim());
+    function getCommunityWalletMeta(addr) {
+      if (!addr) return null;
+      const trimmed = addr.trim();
+      return COMMUNITY_WALLETS.find(w => (w.address || "").trim() === trimmed) || null;
     }
 
     function updateCurrentValidatorLabel() {
@@ -783,7 +797,7 @@
       rows.forEach((row, idx) => {
         const rank = idx + 1;
         const pct = totalBase > 0 ? (row.baseAmount / totalBase) * 100 : 0;
-        const isFoundation = isFoundationWallet(row.address);
+        const communityMeta = getCommunityWalletMeta(row.address);
 
         const tr = document.createElement("tr");
 
@@ -812,10 +826,10 @@
         tr.appendChild(pctTd);
 
         const tagTd = document.createElement("td");
-        if (isFoundation) {
+        if (communityMeta) {
           const tag = document.createElement("span");
           tag.className = "tag-foundation";
-          tag.innerHTML = `<span class="tag-foundation-dot"></span> Foundation`;
+          tag.innerHTML = `<span class="tag-foundation-dot"></span> ${communityMeta.label}`;
           tagTd.appendChild(tag);
         } else if (rank <= 3) {
           const tag = document.createElement("span");
@@ -848,9 +862,9 @@
       }
     }
 
-    // ========= FOUNDATION WALLET BALANCES =========
+    // ========= COMMUNITY WALLET BALANCES =========
 
-    async function fetchFoundationBalance(address) {
+    async function fetchCommunityBalance(address) {
       const url = new URL(`/cosmos/bank/v1beta1/balances/${address}`, LCD_BASE);
       const res = await fetch(url.toString());
       if (!res.ok) {
@@ -872,22 +886,29 @@
 
       tbody.innerHTML = "";
 
-      if (!FOUNDATIONAL_WALLETS || FOUNDATIONAL_WALLETS.length === 0) {
-        setStatus("foundation-status-message", "No foundation wallets configured. Add them in the script to see their balances.", false);
+      if (!COMMUNITY_WALLETS || COMMUNITY_WALLETS.length === 0) {
+        setStatus("foundation-status-message", "No community wallets configured. Add them in the script to see their balances.", false);
         return;
       }
 
-      setStatus("foundation-status-message", "Fetching foundation wallet balances…", false);
+      setStatus("foundation-status-message", "Fetching community wallet balances…", false);
 
-      for (const addr of FOUNDATIONAL_WALLETS) {
-        const cleanAddr = addr.trim();
+      for (const entry of COMMUNITY_WALLETS) {
+        const cleanAddr = (entry.address || "").trim();
+        const label = entry.label || "Community";
         if (!cleanAddr) continue;
 
         const tr = document.createElement("tr");
+
         const walletTd = document.createElement("td");
         walletTd.className = "address-mono";
         walletTd.innerHTML = `<strong>${abbreviateAddress(cleanAddr)}</strong>`;
         tr.appendChild(walletTd);
+
+        const typeTd = document.createElement("td");
+        typeTd.className = "muted";
+        typeTd.textContent = label;
+        tr.appendChild(typeTd);
 
         const balTd = document.createElement("td");
         balTd.className = "cell-right";
@@ -897,7 +918,7 @@
         tbody.appendChild(tr);
 
         try {
-          const res = await fetchFoundationBalance(cleanAddr);
+          const res = await fetchCommunityBalance(cleanAddr);
           balTd.textContent = formatDvpnFromBase(String(res.baseAmount));
         } catch (err) {
           console.error(err);
@@ -906,7 +927,7 @@
         }
       }
 
-      setStatus("foundation-status-message", "Foundation wallet balances updated.", false);
+      setStatus("foundation-status-message", "Community wallet balances updated.", false);
     }
 
     // ========= INIT =========
