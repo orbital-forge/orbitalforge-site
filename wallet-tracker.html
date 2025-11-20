@@ -1021,37 +1021,37 @@
     // ========= COMMUNITY WALLET ACTIVITY (TX HISTORY) =========
 
     async function fetchWalletTxs(address) {
-      // We query for transactions where this address is the message.sender.
       const url = new URL("/cosmos/tx/v1beta1/txs", LCD_BASE);
       url.searchParams.set("events", `message.sender='${address}'`);
-      url.searchParams.set("order_by", "ORDER_BY_DESC");
+      // Use numeric enum value for DESC (2) instead of string name
+      url.searchParams.set("order_by", "2");
       url.searchParams.set("pagination.limit", String(TXS_PER_WALLET_LIMIT));
-
+    
       const res = await fetch(url.toString());
       if (!res.ok) {
         console.error("TX LCD error", res.status, await res.text());
         throw new Error(`tx LCD returned HTTP ${res.status} for ${address}`);
       }
-
+    
       const data = await res.json();
       const txs = data.txs || [];
       const responses = data.tx_responses || [];
-
+    
       const rows = [];
-
+    
       for (let i = 0; i < txs.length; i++) {
         const tx = txs[i];
         const resp = responses[i] || {};
         const msgs = tx.body?.messages || [];
         const ts = resp.timestamp;
         const txhash = resp.txhash;
-
+    
         for (const msg of msgs) {
           const type = msg["@type"] || msg.type_url || "";
           if (!type.includes("cosmos.bank.v1beta1.MsgSend")) continue;
-
+    
           if (msg.from_address !== address) continue; // only outgoing
-
+    
           const to = msg.to_address;
           const amounts = msg.amount || [];
           for (const coin of amounts) {
@@ -1066,9 +1066,10 @@
           }
         }
       }
-
+    
       return rows;
     }
+
 
     function buildActivityTable(rows) {
       const tbody = document.getElementById("activity-body");
