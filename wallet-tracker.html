@@ -2,14 +2,13 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>Orbital Forge | The Expanse Delegation Leaderboard</title>
+  <title>Orbital Forge | Sentinel Validator Delegation Explorer</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <!-- Reuse your main site styles -->
   <link rel="stylesheet" href="assets/styles.css" />
 
   <style>
-    /* Page-specific styling for the leaderboard + foundation view */
     .page-header {
       padding: 3rem 0 1.5rem;
       border-bottom: 1px solid var(--border-subtle);
@@ -33,9 +32,44 @@
     }
 
     .page-header p {
-      max-width: 640px;
+      max-width: 680px;
       color: var(--text-muted);
       font-size: 0.95rem;
+    }
+
+    .validator-selector {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .validator-selector label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+      color: var(--text-muted);
+    }
+
+    .validator-selector select,
+    .validator-selector input {
+      min-width: 240px;
+      border-radius: var(--radius-pill);
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.95);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      font-size: 0.82rem;
+    }
+
+    .validator-selector input {
+      min-width: 280px;
+      font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    .validator-selector .btn-ghost {
+      margin-left: 0.25rem;
     }
 
     .leaderboard-card,
@@ -192,7 +226,7 @@
       align-items: center;
       justify-content: center;
       min-width: 1.7rem;
-      height: 1.1.7rem;
+      height: 1.7rem;
       border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.55);
       font-size: 0.78rem;
@@ -258,6 +292,16 @@
       font-size: 0.78rem;
     }
 
+    .current-validator-label {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      margin-top: 0.15rem;
+    }
+
+    .current-validator-label strong {
+      color: var(--text-main);
+    }
+
     @media (max-width: 720px) {
       .leaderboard-header,
       .foundation-header {
@@ -267,6 +311,9 @@
       .foundation-actions {
         width: 100%;
         justify-content: flex-start;
+      }
+      .validator-selector {
+        align-items: flex-start;
       }
     }
   </style>
@@ -302,13 +349,43 @@
       <!-- Header -->
       <section class="page-header">
         <div class="container">
-          <div class="eyebrow">The Expanse · Sentinel Validator</div>
-          <h1>Delegation Leaderboard & Foundation Wallets</h1>
+          <div class="eyebrow">Sentinel Network · Community Tooling</div>
+          <h1>Validator Delegation Explorer</h1>
           <p>
-            A live view of wallets supporting <strong>The Expanse</strong> and the current state of
-            designated <strong>foundation wallets</strong> on the Sentinel network. Values are derived
-            from the public LCD API and normalized to DVPN (6 decimal places).
+            Explore delegation distribution for any active validator in the Sentinel set, and view
+            the current state of designated <strong>foundation wallets</strong>. Built by
+            <strong>Orbital Forge</strong> to support validators and delegators across the network.
           </p>
+
+          <!-- Validator selector -->
+          <div class="validator-selector">
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+              <label for="validator-select">Active validators</label>
+              <select id="validator-select">
+                <option value="">Loading validators…</option>
+              </select>
+              <span id="current-validator-label" class="current-validator-label">
+                Current validator: <strong>–</strong>
+              </span>
+            </div>
+
+            <div style="display:flex;flex-direction:column;gap:0.25rem;">
+              <label for="valoper-input">Or paste a valoper address</label>
+              <div style="display:flex;gap:0.5rem;flex-wrap:wrap;align-items:center;">
+                <input
+                  id="valoper-input"
+                  type="text"
+                  placeholder="sentvaloper1..."
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <button id="apply-valoper-button" class="btn-ghost" type="button">
+                  <span>✓</span>
+                  <span>Use validator</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -321,7 +398,7 @@
                 <h2 style="font-size:1.1rem;margin:0 0 0.25rem;">Foundation Wallets Overview</h2>
                 <p class="muted" style="margin:0;">
                   These wallets are tracked explicitly, even if they are not currently delegating to
-                  <strong>The Expanse</strong>. Balances shown are liquid DVPN (bank balances), not including staked DVPN.
+                  a specific validator. Balances shown are liquid DVPN (bank balances), not including staked DVPN.
                 </p>
               </div>
               <div class="foundation-actions">
@@ -370,7 +447,7 @@
                 </span>
                 <span class="pill pill--warning">
                   Commission:
-                  <strong>5%</strong>
+                  <strong id="commission-rate">–</strong>
                 </span>
               </div>
 
@@ -379,7 +456,7 @@
                   <span>↻</span>
                   <span>Refresh</span>
                 </button>
-                <a class="btn-ghost" href="https://explorer.sentinel.co/validators" target="_blank" rel="noopener">
+                <a id="explorer-link" class="btn-ghost" href="https://explorer.sentinel.co/validators" target="_blank" rel="noopener">
                   <span>↗</span>
                   <span>View on Explorer</span>
                 </a>
@@ -387,7 +464,7 @@
             </div>
 
             <p id="status-message" class="status-message">
-              Fetching delegations from Sentinel LCD…
+              Select a validator to load its delegations.
             </p>
 
             <div class="leaderboard-table-wrapper">
@@ -434,22 +511,23 @@
 
   <script>
     // ========= CONFIG =========
-    // Replace this with your real validator operator address (valoper).
-    const VALOPER_ADDRESS = "sentvaloper19cg7hegkp7z5gpv8xgm3y0wxkzzmw8knafk85t";
 
-    // Sentinel public LCD endpoint.
     const LCD_BASE = "https://lcd.sentinel.co";
-
-    // DVPN exponent: 1 DVPN = 10^6 udvpn
+    const DVPN_DENOM = "udvpn";
     const DVPN_EXPONENT = 6;
 
-    // Foundation wallets you want to track (even if not delegating to you).
+    // Your foundation wallets (can be anyone, not tied to a specific validator)
     const FOUNDATIONAL_WALLETS = [
-        "sent1p3hta793yukw9p3hfwct0gdnzzf7vvvwwdys3z",
-        "sent1vv8kmwrs24j5emzw8dp7k8satgea62l7knegd7"
+      // "sent1yourfoundationwallet1...",
+      // "sent1yourfoundationwallet2..."
     ];
 
-    const DVPN_DENOM = "udvpn";
+    // Initial validator (optional) – if you want the page to default to The Expanse, put your valoper here.
+    const DEFAULT_VALOPER = ""; // e.g. "sentvaloper1xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+
+    let currentValoper = DEFAULT_VALOPER || null;
+    let currentValidatorMeta = null;
+    let validatorsIndex = []; // Array of {operator_address, moniker}
 
     // ========= HELPERS =========
 
@@ -465,10 +543,6 @@
     function abbreviateAddress(addr) {
       if (!addr || addr.length <= 12) return addr || "";
       return addr.slice(0, 7) + "…" + addr.slice(-5);
-    }
-
-    function isFoundationWallet(addr) {
-      return FOUNDATIONAL_WALLETS.some(f => f.trim() === addr.trim());
     }
 
     function setStatus(id, message, isError = false) {
@@ -488,6 +562,17 @@
       if (countEl) countEl.textContent = count.toString();
     }
 
+    function setCommissionDisplay(rateStr) {
+      const el = document.getElementById("commission-rate");
+      if (!el) return;
+      if (!rateStr && rateStr !== "0") {
+        el.textContent = "–";
+        return;
+      }
+      const pct = Number(rateStr) * 100;
+      el.textContent = pct.toFixed(2) + " %";
+    }
+
     function applyRankClass(rank) {
       if (rank === 1) return "rank-badge rank-badge--gold";
       if (rank === 2) return "rank-badge rank-badge--silver";
@@ -495,11 +580,128 @@
       return "rank-badge";
     }
 
+    function isFoundationWallet(addr) {
+      return FOUNDATIONAL_WALLETS.some(f => f.trim() === addr.trim());
+    }
+
+    function updateCurrentValidatorLabel() {
+      const labelEl = document.getElementById("current-validator-label");
+      if (!labelEl) return;
+      const strongEl = labelEl.querySelector("strong");
+      const name = currentValidatorMeta?.description?.moniker || (currentValoper || "–");
+      if (strongEl) strongEl.textContent = name;
+    }
+
+    function updateExplorerLink() {
+      const link = document.getElementById("explorer-link");
+      if (!link) return;
+      if (!currentValoper) {
+        link.href = "https://explorer.sentinel.co/validators";
+        return;
+      }
+      // If you have a specific explorer URL pattern for valoper, plug it in here.
+      link.href = "https://explorer.sentinel.co/validators/" + currentValoper;
+    }
+
+    // ========= VALIDATOR LIST & META =========
+
+    async function loadValidatorSet() {
+      const select = document.getElementById("validator-select");
+      if (!select) return;
+
+      select.innerHTML = "<option value=\"\">Loading validators…</option>";
+
+      try {
+        const url = new URL("/cosmos/staking/v1beta1/validators", LCD_BASE);
+        url.searchParams.set("status", "BOND_STATUS_BONDED");
+        url.searchParams.set("pagination.limit", "80");
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+          console.error("Error loading validator set", res.status, await res.text());
+          throw new Error("LCD returned " + res.status);
+        }
+        const data = await res.json();
+        const vals = data.validators || [];
+
+        validatorsIndex = vals.map(v => ({
+          operator_address: v.operator_address,
+          moniker: v.description?.moniker || v.operator_address
+        }));
+
+        // Populate dropdown
+        select.innerHTML = "";
+        select.appendChild(new Option("Select a validator…", "", true, false));
+        validatorsIndex.forEach(v => {
+          const label = `${v.moniker} (${abbreviateAddress(v.operator_address)})`;
+          const opt = new Option(label, v.operator_address, false, false);
+          select.appendChild(opt);
+        });
+
+        // If DEFAULT_VALOPER is set, pre-select it
+        if (currentValoper) {
+          const found = validatorsIndex.find(v => v.operator_address === currentValoper);
+          if (found) {
+            select.value = currentValoper;
+          }
+        }
+      } catch (err) {
+        console.error(err);
+        select.innerHTML = "<option value=\"\">Failed to load validators</option>";
+      }
+    }
+
+    async function loadValidatorMeta(valoper) {
+      if (!valoper) {
+        currentValidatorMeta = null;
+        setCommissionDisplay(null);
+        updateCurrentValidatorLabel();
+        return;
+      }
+
+      try {
+        const url = new URL(`/cosmos/staking/v1beta1/validators/${valoper}`, LCD_BASE);
+        const res = await fetch(url.toString());
+        if (!res.ok) {
+          console.error("Validator meta error", res.status, await res.text());
+          throw new Error("LCD returned " + res.status);
+        }
+        const data = await res.json();
+        currentValidatorMeta = data.validator || null;
+        const rate = currentValidatorMeta?.commission?.commission_rates?.rate;
+        setCommissionDisplay(rate);
+      } catch (err) {
+        console.error(err);
+        currentValidatorMeta = null;
+        setCommissionDisplay(null);
+      }
+
+      updateCurrentValidatorLabel();
+    }
+
+    async function setCurrentValidator(valoper) {
+      currentValoper = valoper || null;
+      updateCurrentValidatorLabel();
+      updateExplorerLink();
+
+      const tbody = document.getElementById("leaderboard-body");
+      if (tbody) tbody.innerHTML = "";
+
+      if (!currentValoper) {
+        setStatus("status-message", "Select a validator to load its delegations.", false);
+        setTotals(0, 0);
+        setCommissionDisplay(null);
+        return;
+      }
+
+      await loadValidatorMeta(currentValoper);
+      await refreshLeaderboard();
+    }
+
     // ========= DELEGATION DATA (LEADERBOARD) =========
 
     async function fetchAllDelegations() {
-      if (!VALOPER_ADDRESS || VALOPER_ADDRESS.startsWith("REPLACE_")) {
-        throw new Error("VALOPER_ADDRESS is not configured yet.");
+      if (!currentValoper) {
+        throw new Error("No validator selected.");
       }
 
       let nextKey = null;
@@ -510,7 +712,7 @@
       do {
         page += 1;
         const url = new URL(
-          `/cosmos/staking/v1beta1/validators/${VALOPER_ADDRESS}/delegations`,
+          `/cosmos/staking/v1beta1/validators/${currentValoper}/delegations`,
           LCD_BASE
         );
         url.searchParams.set("pagination.limit", String(limit));
@@ -520,8 +722,7 @@
 
         const res = await fetch(url.toString());
         if (!res.ok) {
-          const text = await res.text();
-          console.error("LCD error", res.status, text);
+          console.error("LCD error", res.status, await res.text());
           throw new Error(`LCD returned HTTP ${res.status}`);
         }
 
@@ -548,7 +749,7 @@
       tbody.innerHTML = "";
 
       if (!delegationResponses || delegationResponses.length === 0) {
-        setStatus("status-message", "No delegations found for this validator yet.", false);
+        setStatus("status-message", "No delegations found for this validator.", false);
         setTotals(0, 0);
         return;
       }
@@ -582,7 +783,6 @@
 
       rows.forEach((row, idx) => {
         const rank = idx + 1;
-        const dvpn = row.baseAmount / Math.pow(10, DVPN_EXPONENT);
         const pct = totalBase > 0 ? (row.baseAmount / totalBase) * 100 : 0;
         const isFoundation = isFoundationWallet(row.address);
 
@@ -636,16 +836,16 @@
 
     async function refreshLeaderboard() {
       try {
+        if (!currentValoper) {
+          setStatus("status-message", "Select a validator to load its delegations.", false);
+          return;
+        }
         setStatus("status-message", "Fetching delegations from Sentinel LCD…", false);
         const responses = await fetchAllDelegations();
         buildLeaderboard(responses);
       } catch (err) {
         console.error(err);
-        if (String(err.message || "").includes("VALOPER_ADDRESS")) {
-          setStatus("status-message", "Configure your validator operator address in the script before using the leaderboard.", true);
-        } else {
-          setStatus("status-message", "Failed to load delegations. LCD may be unreachable or CORS-blocked. Try again later.", true);
-        }
+        setStatus("status-message", "Failed to load delegations. LCD may be unreachable or CORS-blocked. Try again later.", true);
       }
     }
 
@@ -680,7 +880,6 @@
 
       setStatus("foundation-status-message", "Fetching foundation wallet balances…", false);
 
-      const rows = [];
       for (const addr of FOUNDATIONAL_WALLETS) {
         const cleanAddr = addr.trim();
         if (!cleanAddr) continue;
@@ -715,9 +914,7 @@
 
     document.addEventListener("DOMContentLoaded", () => {
       const yearEl = document.getElementById("year");
-      if (yearEl) {
-        yearEl.textContent = new Date().getFullYear();
-      }
+      if (yearEl) yearEl.textContent = new Date().getFullYear();
 
       const refreshBtn = document.getElementById("refresh-button");
       if (refreshBtn) {
@@ -733,9 +930,46 @@
         });
       }
 
-      // Initial load
+      const selectEl = document.getElementById("validator-select");
+      if (selectEl) {
+        selectEl.addEventListener("change", async (e) => {
+          const valoper = e.target.value || null;
+          const input = document.getElementById("valoper-input");
+          if (input && valoper) {
+            input.value = valoper;
+          }
+          await setCurrentValidator(valoper);
+        });
+      }
+
+      const applyBtn = document.getElementById("apply-valoper-button");
+      if (applyBtn) {
+        applyBtn.addEventListener("click", async () => {
+          const input = document.getElementById("valoper-input");
+          const valoper = (input?.value || "").trim();
+          if (!valoper) return;
+          if (selectEl) {
+            // Try to sync dropdown to this valoper if it exists
+            const option = Array.from(selectEl.options).find(o => o.value === valoper);
+            if (option) selectEl.value = valoper;
+            else selectEl.value = "";
+          }
+          await setCurrentValidator(valoper);
+        });
+      }
+
+      loadValidatorSet();
       refreshFoundationWallets();
-      refreshLeaderboard();
+
+      // If you set DEFAULT_VALOPER, pre-load it
+      if (DEFAULT_VALOPER) {
+        const input = document.getElementById("valoper-input");
+        if (input) input.value = DEFAULT_VALOPER;
+        setCurrentValidator(DEFAULT_VALOPER);
+      } else {
+        updateCurrentValidatorLabel();
+        updateExplorerLink();
+      }
     });
   </script>
 </body>
