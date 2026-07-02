@@ -1,0 +1,72 @@
+<svg width="1100" height="760" viewBox="0 0 1100 760" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+<title id="title">Orbital Forge IP incubation map</title>
+<desc id="desc">A stylized map showing ideas flowing through research, prototype, evidence, protection, and product pathways.</desc>
+<rect width="1100" height="760" rx="34" fill="#07111f"/>
+<defs>
+  <radialGradient id="g1" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(220 130) rotate(48) scale(720 520)">
+    <stop stop-color="#22d3ee" stop-opacity="0.34"/>
+    <stop offset="0.45" stop-color="#2563eb" stop-opacity="0.13"/>
+    <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+  </radialGradient>
+  <radialGradient id="g2" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(870 620) rotate(24) scale(620 420)">
+    <stop stop-color="#fb923c" stop-opacity="0.26"/>
+    <stop offset="1" stop-color="#020617" stop-opacity="0"/>
+  </radialGradient>
+  <linearGradient id="line" x1="185" y1="380" x2="910" y2="380" gradientUnits="userSpaceOnUse">
+    <stop stop-color="#38bdf8" stop-opacity="0.15"/>
+    <stop offset="0.5" stop-color="#38bdf8" stop-opacity="0.86"/>
+    <stop offset="1" stop-color="#f97316" stop-opacity="0.54"/>
+  </linearGradient>
+  <filter id="glow" x="-80" y="-80" width="240" height="240" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+    <feGaussianBlur stdDeviation="16" result="blur"/>
+    <feColorMatrix in="blur" type="matrix" values="0 0 0 0 0.2 0 0 0 0 0.7 0 0 0 0 1 0 0 0 0.6 0"/>
+    <feBlend mode="screen" in2="SourceGraphic"/>
+  </filter>
+</defs>
+<rect width="1100" height="760" rx="34" fill="url(#g1)"/>
+<rect width="1100" height="760" rx="34" fill="url(#g2)"/>
+<g opacity="0.38">
+  <path d="M110 152H990" stroke="#93c5fd" stroke-opacity="0.12"/>
+  <path d="M110 260H990" stroke="#93c5fd" stroke-opacity="0.12"/>
+  <path d="M110 368H990" stroke="#93c5fd" stroke-opacity="0.12"/>
+  <path d="M110 476H990" stroke="#93c5fd" stroke-opacity="0.12"/>
+  <path d="M110 584H990" stroke="#93c5fd" stroke-opacity="0.12"/>
+  <path d="M212 92V668" stroke="#93c5fd" stroke-opacity="0.10"/>
+  <path d="M390 92V668" stroke="#93c5fd" stroke-opacity="0.10"/>
+  <path d="M568 92V668" stroke="#93c5fd" stroke-opacity="0.10"/>
+  <path d="M746 92V668" stroke="#93c5fd" stroke-opacity="0.10"/>
+  <path d="M924 92V668" stroke="#93c5fd" stroke-opacity="0.10"/>
+</g>
+<path d="M158 380C255 242 377 202 524 282C671 362 762 528 944 392" stroke="url(#line)" stroke-width="5" stroke-linecap="round"/>
+<path d="M170 456C305 542 431 536 548 442C641 367 724 321 926 312" stroke="#94a3b8" stroke-opacity="0.32" stroke-width="2" stroke-dasharray="9 12"/>
+<g font-family="Inter, Arial, sans-serif" font-size="22" fill="#e5eefc" font-weight="700">
+  <g transform="translate(112 246)">
+    <rect width="165" height="104" rx="24" fill="#0f1b2e" stroke="#2dd4bf" stroke-opacity="0.34"/>
+    <circle cx="34" cy="34" r="10" fill="#22d3ee" filter="url(#glow)"/>
+    <text x="28" y="70">Ideas</text>
+  </g>
+  <g transform="translate(316 154)">
+    <rect width="170" height="112" rx="24" fill="#0f1b2e" stroke="#60a5fa" stroke-opacity="0.32"/>
+    <circle cx="38" cy="36" r="10" fill="#60a5fa"/>
+    <text x="28" y="73">Research</text>
+  </g>
+  <g transform="translate(520 278)">
+    <rect width="170" height="112" rx="24" fill="#0f1b2e" stroke="#38bdf8" stroke-opacity="0.46"/>
+    <circle cx="38" cy="36" r="12" fill="#38bdf8" filter="url(#glow)"/>
+    <text x="28" y="73">Prototype</text>
+  </g>
+  <g transform="translate(704 474)">
+    <rect width="170" height="112" rx="24" fill="#0f1b2e" stroke="#f97316" stroke-opacity="0.38"/>
+    <circle cx="38" cy="36" r="10" fill="#fb923c"/>
+    <text x="28" y="73">Evidence</text>
+  </g>
+  <g transform="translate(820 276)">
+    <rect width="170" height="112" rx="24" fill="#0f1b2e" stroke="#f97316" stroke-opacity="0.46"/>
+    <circle cx="38" cy="36" r="12" fill="#fb923c" filter="url(#glow)"/>
+    <text x="28" y="73">IP Asset</text>
+  </g>
+</g>
+<g opacity="0.85" fill="#9fb3cc" font-family="Inter, Arial, sans-serif" font-size="17" font-weight="500">
+  <text x="116" y="626">Concepts are shaped into defensible assets through working software, data, tests, and transition packages.</text>
+</g>
+</svg>

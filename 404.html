@@ -3,68 +3,93 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="robots" content="index,follow" />
+  <meta name="robots" content="noindex,follow" />
   <title>Page Not Found | Orbital Forge</title>
-  <meta name="description" content="The requested Orbital Forge page was not found." />
+  <meta name="description" content="Page not found." />
   <meta property="og:title" content="Page Not Found | Orbital Forge" />
-  <meta property="og:description" content="The requested Orbital Forge page was not found." />
+  <meta property="og:description" content="Page not found." />
   <meta property="og:type" content="website" />
-  <meta property="og:image" content="assets/orbitalforge-logo-full.png" />
-  <link rel="icon" href="assets/orbitalforge-logo-icon.png" />
+  <meta property="og:image" content="assets/og-image.png" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://www.orbital-forge.com/404.html" />
+  <link rel="icon" href="assets/favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/favicon-192.png" />
+  <link rel="apple-touch-icon" href="assets/favicon-512.png" />
   <link rel="stylesheet" href="assets/styles.css" />
+  <script src="assets/site.js" defer></script>
 </head>
 <body>
+  <a class="skip-link" href="#main">Skip to content</a>
   <div class="page">
-    <a class="skip-link" href="#main">Skip to content</a>
-<header class="site-header">
+    <header class="site-header">
   <div class="container">
     <nav class="nav" aria-label="Primary navigation">
-      <a href="index.html" class="brand" aria-label="Orbital Forge home">
-        <img src="assets/orbitalforge-logo-icon.png" class="brand-logo" alt="Orbital Forge logo" />
-        <div class="brand-wordmark">
+      <a class="brand" href="index.html" aria-label="Orbital Forge home">
+        <img class="brand-mark" src="assets/orbital-forge-mark.png" alt="Orbital Forge logo" />
+        <span class="brand-wordmark">
           <span class="brand-name">Orbital Forge</span>
-          <span class="brand-tagline">R&amp;D / Technology Incubator</span>
-        </div>
+          <span class="brand-tagline">IP Incubation Studio</span>
+        </span>
       </a>
+      <button class="menu-toggle" type="button" aria-label="Open navigation" aria-expanded="false" data-menu-toggle>
+        <span></span><span></span><span></span>
+      </button>
       <div class="nav-links">
         <a href="index.html" class="nav-active">Home</a>
-<a href="capabilities.html" class="">Capabilities</a>
-<a href="government.html" class="">Government</a>
-<a href="lab.html" class="">Lab</a>
-<a href="contact.html" class="">Contact</a>
+        <a href="studio.html">Studio</a>
+        <a href="portfolio.html">Portfolio</a>
+        <a href="contact.html">Contact</a>
+        <a class="nav-cta" href="contact.html#start">Start a conversation</a>
       </div>
     </nav>
   </div>
 </header>
     <main id="main">
+
   <section class="page-hero">
-    <div class="container">
+    <div class="container page-hero-card">
       <div class="eyebrow">404</div>
-      <h1>Page not found.</h1>
-      <p>The page may have moved as Orbital Forge shifted from a blockchain-first site to an R&amp;D and technical incubation site.</p>
-      <div class="hero-actions">
-        <a class="btn btn-primary" href="index.html">Return home</a>
-        <a class="btn btn-ghost" href="digital-infrastructure.html">Digital infrastructure archive</a>
-      </div>
+      <h1 class="page-title">This page drifted out of orbit.</h1>
+      <p class="page-lead">The page you requested does not exist or has moved.</p>
+      <div class="actions"><a class="btn btn-primary" href="index.html">Return home</a><a class="btn btn-ghost" href="contact.html">Contact Orbital Forge</a></div>
     </div>
   </section>
-</main>
+
+    </main>
     <footer class="site-footer">
-  <div class="container footer-inner">
-    <div class="footer-left">
-      <span class="footer-brand">Orbital Forge</span>
-      <span>© <span data-current-year></span> Orbital Forge, LLC. All rights reserved.</span>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/orbital-forge-mark.png" alt="" />
+          <div>
+            <div class="footer-title">Orbital Forge</div>
+            <p>IP incubation for applied research, prototypes, and product pathways.</p>
+          </div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Company</div>
+        <div class="footer-links">
+          <a href="studio.html">Studio model</a>
+          <a href="portfolio.html">Portfolio themes</a>
+          <a href="contact.html">Contact</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-heading">Secondary</div>
+        <div class="footer-links">
+          <a href="digital-infrastructure.html">Digital infrastructure</a>
+          <a href="README.md">Site notes</a>
+        </div>
+      </div>
     </div>
-    <div class="footer-links" aria-label="Footer links">
-      <a href="capabilities.html">Capabilities</a>
-      <a href="government.html">Government</a>
-      <a href="lab.html">Lab</a>
-      <a href="contact.html">Contact</a>
-      <a href="digital-infrastructure.html">Digital Infrastructure</a>
+    <div class="subfooter">
+      <span>© <span data-year></span> Orbital Forge, LLC. All rights reserved.</span>
+      <span>Built for GitHub Pages.</span>
     </div>
   </div>
 </footer>
-<script src="assets/site.js"></script>
   </div>
 </body>
 </html>

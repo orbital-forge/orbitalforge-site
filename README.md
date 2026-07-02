@@ -1,98 +1,29 @@
 # Orbital Forge Website
 
-Static GitHub Pages site for Orbital Forge, LLC.
-
-## Positioning
-
-This rebuild changes the public site from blockchain-first positioning to:
-
-- R&D / technology incubation
-- Government-focused prototype work
-- Mission software, AI workflows, autonomy, data fusion, and secure infrastructure
-- Blockchain / validator work preserved as a secondary digital infrastructure venture
-
-## Repo layout
-
-```text
-.
-├── CNAME
-├── index.html
-├── capabilities.html
-├── government.html
-├── lab.html
-├── contact.html
-├── digital-infrastructure.html
-├── validator.html
-├── wallet-tracker.html
-├── 404.html
-├── robots.txt
-├── sitemap.xml
-└── assets/
-    ├── styles.css
-    ├── site.js
-    ├── forge-systems-map.svg
-    ├── orbitalforge-logo.png
-    ├── orbitalforge-hero-banner.png
-    └── the-expanse-logo.png
-```
-
-## Notes
-
-- `digital-infrastructure.html`, `validator.html`, and `wallet-tracker.html` include `noindex,follow` meta tags so blockchain content is still available but de-emphasized in search.
-- The main navigation intentionally does not include blockchain or validator links.
-- The footer includes a small `Digital Infrastructure` link to preserve access without making it the primary story.
-- This site is pure static HTML/CSS/JS and does not require a build step.
+Static GitHub Pages site for Orbital Forge as an IP incubation studio.
 
 ## Local preview
 
-From the repo root:
-
-```bash
-python3 -m http.server 8000
+```powershell
+python -m http.server 8000
 ```
 
-Then open:
+Open `http://localhost:8000`.
 
-```text
-http://localhost:8000
-```
+## Publish with Git
 
-## Deploy to GitHub Pages
-
-1. Unzip this package.
-2. Copy the contents into the root of the existing GitHub Pages repo.
-3. Commit and push to the branch configured for GitHub Pages, usually `main`.
-4. GitHub Pages should redeploy automatically.
-
-Suggested commands:
-
-```bash
-# from inside your local website repo
-git checkout main
-git pull origin main
-
-# copy the unzipped files into this repo, then inspect changes
+```powershell
 git status
-git diff --stat
-
-# stage, commit, and push
 git add .
-git commit -m "Reposition site for R&D and government technology incubation"
+git commit -m "Redesign Orbital Forge website as IP incubator"
 git push origin main
 ```
 
-If GitHub Pages is not already enabled, go to:
+## Publish with GitHub Desktop
 
-```text
-GitHub repo → Settings → Pages → Build and deployment
-```
-
-Use:
-
-```text
-Source: Deploy from a branch
-Branch: main
-Folder: /root
-```
-
-The included `CNAME` file preserves the custom domain currently configured for the site.
+1. Copy the contents of this folder into the repository root.
+2. Open GitHub Desktop and select the website repository.
+3. Review the changed files.
+4. Add a summary such as `Redesign Orbital Forge website as IP incubator`.
+5. Click **Commit to main**.
+6. Click **Push origin**.
